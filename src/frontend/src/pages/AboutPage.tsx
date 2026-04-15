@@ -23,9 +23,8 @@ const TEAM = [
     name: "Prince Kumar",
     role: "Founder & Tech Lead",
     roleHi: "संस्थापक और टेक लीड",
-    desc: "Visionary behind UdyamSathi, leading technology strategy and platform development to empower rural entrepreneurs across Bihar.",
-    descHi:
-      "UdyamSathi के पीछे के दूरदर्शी, बिहार भर के ग्रामीण उद्यमियों को सशक्त बनाने के लिए प्रौद्योगिकी रणनीति और प्लेटफ़ॉर्म विकास का नेतृत्व करते हैं।",
+    desc: "Responsible for platform development, system design, and overall startup vision.",
+    descHi: "प्लेटफ़ॉर्म विकास, सिस्टम डिज़ाइन और समग्र स्टार्टअप विजन के लिए जिम्मेदार।",
     initials: "PK",
     color: "from-primary/80 to-primary",
   },
@@ -33,9 +32,8 @@ const TEAM = [
     name: "Rahul Kumar",
     role: "Operations Manager",
     roleHi: "संचालन प्रबंधक",
-    desc: "Manages day-to-day operations, coordinates expert assignments, and ensures smooth service delivery to every user.",
-    descHi:
-      "दिन-प्रतिदिन के संचालन का प्रबंधन करते हैं, विशेषज्ञ असाइनमेंट समन्वित करते हैं, और हर उपयोगकर्ता को सुचारु सेवा सुनिश्चित करते हैं।",
+    desc: "Handles field operations, execution planning, and coordination with ground teams.",
+    descHi: "फील्ड संचालन, निष्पादन योजना और ग्राउंड टीमों के साथ समन्वय संभालते हैं।",
     initials: "RK",
     color: "from-accent/80 to-accent",
   },
@@ -43,9 +41,9 @@ const TEAM = [
     name: "Gautam Kumar Yadav",
     role: "Field Specialist",
     roleHi: "फील्ड विशेषज्ञ",
-    desc: "On-ground expert who visits farms, provides hands-on training, and supports users during business setup and execution.",
+    desc: "Works on ground-level implementation and supports rural business setup.",
     descHi:
-      "जमीनी विशेषज्ञ जो खेतों का दौरा करते हैं, व्यावहारिक प्रशिक्षण देते हैं, और व्यवसाय स्थापना व निष्पादन में उपयोगकर्ताओं का समर्थन करते हैं।",
+      "जमीनी स्तर पर कार्यान्वयन पर काम करते हैं और ग्रामीण व्यवसाय स्थापना में सहायता करते हैं।",
     initials: "GY",
     color: "from-primary/60 to-accent/80",
   },
@@ -53,9 +51,9 @@ const TEAM = [
     name: "Mayank Kumar",
     role: "Marketing & Outreach",
     roleHi: "मार्केटिंग और आउटरीच",
-    desc: "Drives user acquisition and awareness campaigns, connecting rural communities with UdyamSathi's services.",
+    desc: "Focuses on user acquisition, village outreach, and awareness programs.",
     descHi:
-      "उपयोगकर्ता अधिग्रहण और जागरूकता अभियान चलाते हैं, ग्रामीण समुदायों को UdyamSathi की सेवाओं से जोड़ते हैं।",
+      "उपयोगकर्ता अधिग्रहण, गाँव आउटरीच और जागरूकता कार्यक्रमों पर ध्यान केंद्रित करते हैं।",
     initials: "MK",
     color: "from-accent to-secondary",
   },
@@ -63,9 +61,9 @@ const TEAM = [
     name: "Suhani Kumari",
     role: "Women Empowerment Lead",
     roleHi: "महिला सशक्तिकरण प्रमुख",
-    desc: "Champion for women entrepreneurs, running dedicated programs to help women start and grow their own businesses.",
+    desc: "Works with women entrepreneurs and manages training and small business initiatives.",
     descHi:
-      "महिला उद्यमियों की समर्थक, महिलाओं को अपना व्यवसाय शुरू करने और विकसित करने में मदद के लिए समर्पित कार्यक्रम चलाती हैं।",
+      "महिला उद्यमियों के साथ काम करती हैं और प्रशिक्षण तथा छोटे व्यवसाय पहलों का प्रबंधन करती हैं।",
     initials: "SK",
     color: "from-primary to-accent/60",
   },
@@ -170,18 +168,15 @@ export default function AboutPage() {
             className="mb-4 bg-accent/10 text-accent border-accent/20 font-body"
           >
             <Wheat className="w-3.5 h-3.5 mr-1.5" />
-            {t("About Us", "हमारे बारे में")}
+            {t("Our Team – UdyamSathi", "हमारी टीम – UdyamSathi")}
           </Badge>
           <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-foreground mb-5 text-balance">
-            {t(
-              "Empowering Rural India, One Business at a Time",
-              "एक समय में एक व्यवसाय, ग्रामीण भारत को सशक्त बनाना",
-            )}
+            {t("The People Behind UdyamSathi", "UdyamSathi के पीछे के लोग")}
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground font-body leading-relaxed max-w-2xl mx-auto">
             {t(
-              "UdyamSathi was born from a simple belief: every rural family deserves the tools, knowledge, and support to build a successful business. We bridge the gap between rural potential and real-world opportunity.",
-              "UdyamSathi एक सरल विश्वास से उत्पन्न हुआ: प्रत्येक ग्रामीण परिवार एक सफल व्यवसाय बनाने के लिए उपकरण, ज्ञान और समर्थन का हकदार है। हम ग्रामीण क्षमता और वास्तविक दुनिया के अवसर के बीच की खाई को पाटते हैं।",
+              "Dedicated professionals working towards building a strong rural business ecosystem and empowering local entrepreneurs.",
+              "समर्पित पेशेवर जो एक मजबूत ग्रामीण व्यापार पारिस्थितिकी तंत्र बनाने और स्थानीय उद्यमियों को सशक्त बनाने की दिशा में काम कर रहे हैं।",
             )}
           </p>
         </div>
@@ -367,8 +362,8 @@ export default function AboutPage() {
             </h2>
             <p className="text-sm text-muted-foreground font-body max-w-xl mx-auto">
               {t(
-                "Dedicated professionals united by one mission — transforming rural livelihoods.",
-                "एक मिशन से एकजुट समर्पित पेशेवर — ग्रामीण आजीविका को बदलना।",
+                "Dedicated professionals working towards building a strong rural business ecosystem and empowering local entrepreneurs.",
+                "समर्पित पेशेवर जो एक मजबूत ग्रामीण व्यापार पारिस्थितिकी तंत्र बनाने और स्थानीय उद्यमियों को सशक्त बनाने की दिशा में काम कर रहे हैं।",
               )}
             </p>
           </div>
