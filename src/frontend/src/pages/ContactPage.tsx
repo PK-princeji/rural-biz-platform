@@ -28,7 +28,9 @@ const PHONE_TEL = "tel:+918579042891";
 const WA_NUMBER = "+91 8986378505";
 const WA_LINK =
   "https://wa.me/918986378505?text=Hi%2C%20I%20need%20help%20with%20my%20rural%20business";
-const ADDRESS = "DRCC Road, Kathal Bari, Barari, Bhagalpur, Bihar – 812003";
+const ADDRESS =
+  "DRCC Road, Kathal Bari, Barari, Bhagalpur, Bihar – 812003, India";
+const COMPANY = "UdyamSathi";
 
 // ─── FAQ Data ────────────────────────────────────────────────────────────────
 const FAQS = [
@@ -167,23 +169,28 @@ function ContactForm() {
   if (submitted) {
     return (
       <div
-        className="flex flex-col items-center justify-center gap-4 py-10 px-6 text-center"
+        className="flex flex-col items-center justify-center gap-5 py-10 px-6 text-center"
         data-ocid="contact.form.success_state"
       >
-        <div className="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center">
-          <CheckCircle className="w-9 h-9 text-accent" />
+        <div className="w-20 h-20 rounded-full bg-accent/15 border-2 border-accent/30 flex items-center justify-center">
+          <CheckCircle className="w-10 h-10 text-accent" />
         </div>
-        <h3 className="font-display font-bold text-xl text-foreground">
-          Message Sent! / संदेश भेजा गया!
-        </h3>
-        <p className="font-body text-muted-foreground text-sm leading-relaxed max-w-xs">
-          Thank you! We will contact you within 24 hours.
-          <br />
-          धन्यवाद! हम 24 घंटे के भीतर आपसे संपर्क करेंगे।
-        </p>
+        <div className="space-y-2">
+          <h3 className="font-display font-bold text-2xl text-foreground">
+            Message Sent!
+          </h3>
+          <div className="rounded-xl bg-accent/10 border border-accent/25 px-6 py-4 max-w-sm mx-auto">
+            <p className="font-body font-semibold text-accent text-base leading-snug">
+              Thank you! Our team will contact you within 24 hours.
+            </p>
+            <p className="font-body text-muted-foreground text-sm mt-1">
+              धन्यवाद! हमारी टीम 24 घंटे में संपर्क करेगी।
+            </p>
+          </div>
+        </div>
         <Button
           variant="outline"
-          className="mt-2"
+          className="mt-1 font-body"
           onClick={() => {
             setSubmitted(false);
             setForm({
@@ -197,7 +204,7 @@ function ContactForm() {
           }}
           data-ocid="contact.form.send_another_button"
         >
-          Send Another / दूसरा भेजें
+          Send Another Message
         </Button>
       </div>
     );
@@ -419,7 +426,7 @@ export default function ContactPage() {
           <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-4 py-1.5 mb-4">
             <Phone className="w-4 h-4" />
             <span className="text-sm font-body font-medium">
-              Support Team Ready / सहायता टीम उपलब्ध
+              {COMPANY} Support Team
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-display font-bold mb-3 text-balance">
@@ -514,9 +521,13 @@ export default function ContactPage() {
                   <p className="text-xs font-body text-muted-foreground uppercase tracking-wide mb-0.5">
                     Email / ईमेल
                   </p>
-                  <p className="font-display font-semibold text-foreground text-sm sm:text-base truncate">
+                  <a
+                    href={`mailto:${EMAIL}`}
+                    className="font-display font-semibold text-primary text-sm sm:text-base truncate hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent block"
+                    data-ocid="contact.email_link"
+                  >
                     {EMAIL}
-                  </p>
+                  </a>
                 </div>
               </div>
               <button

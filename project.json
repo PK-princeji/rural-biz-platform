@@ -1,24 +1,31 @@
 {
-  "overview": "Rural Entrepreneurship Platform — a full-stack web application helping rural users (farmers, youth, women entrepreneurs) start and run small businesses in agriculture, fishery, poultry, and goat farming. Connects users with expert guidance, field support, training, and resources.",
+  "overview": "UdyamSathi is a rural entrepreneurship platform helping users in Bihar, India start and run small businesses in agriculture, fishery, poultry, and goat farming. It connects rural users with experts for guidance, field support, training, and resource supply — with full case management, AI business recommendations, and a real backend that captures leads and tracks every user journey.",
   "features": [
-    "Homepage with lead capture and dual CTAs",
-    "Visual 6-step user journey flow",
-    "User dashboard with request tracking, AI results, and progress tracker",
-    "AI business suggestion quiz with saved results",
-    "Contact page with click-to-call and WhatsApp",
-    "Pricing section with consultation, setup, training, and premium tiers",
-    "About page with team section (5 members)",
-    "Admin panel for managing all leads and cases",
-    "Service request system with Case ID tracking",
-    "Mobile-responsive design with Green + Blue theme"
+    "Company rebranded to UdyamSathi with consistent branding across all pages",
+    "Complete footer with address, phone, WhatsApp, email, and working hours",
+    "Contact page with click-to-call, WhatsApp chat button, and working hours (Mon–Sat 9AM–6PM)",
+    "Real backend with persistent storage for users, cases, and contact leads",
+    "Case management: automatic Case ID generation, Pending/In Progress/Completed status",
+    "Admin panel: view all cases, assign experts, update status and notes",
+    "User dashboard: My Requests, AI results, progress tracker, Request Expert Call button",
+    "AI business recommendation quiz with results saved to user profile",
+    "5-step How It Works: Register → Submit → Expert Help → Start Business → Earn Income",
+    "Team section with all 5 UdyamSathi team members",
+    "Pricing section: Consultation, Setup, Training, Premium tiers",
+    "Training enrollment with dashboard tracking (Enrolled/Ongoing/Completed)",
+    "Resource catalog with supply request system",
+    "Mobile-responsive green + blue design throughout"
   ],
-  "category": "productivity",
+  "category": "business",
   "tags": [
     "rural-entrepreneurship",
+    "bihar",
+    "india",
+    "case-management",
     "lead-generation",
-    "business-support",
     "agriculture",
-    "india"
+    "small-business",
+    "expert-matching"
   ],
-  "last_updated": "2026-04-15T22:17:47.185Z"
+  "last_updated": "2026-04-15T22:49:35.163Z"
 }

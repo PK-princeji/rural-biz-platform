@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
-import { MessageCircle } from "lucide-react";
+import { CheckCircle, Phone, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import type { AIQuizResult, QuizAnswers } from "../backend.d.ts";
@@ -120,6 +120,7 @@ const BUSINESS_CONFIG: Record<
     icon: string;
     color: string;
     description: string;
+    reasons: string[];
   }
 > = {
   Farming: {
@@ -128,6 +129,11 @@ const BUSINESS_CONFIG: Record<
     icon: "🌾",
     color: "bg-secondary/20 border-secondary/40 text-secondary-foreground",
     description: "Best for dry farmland with some experience in agriculture.",
+    reasons: [
+      "Your location and land type are ideal for crop cultivation",
+      "Crop farming matches your interest and experience level",
+      "Investment is proportional to your available budget",
+    ],
   },
   Fishery: {
     label: "Fish Farming",
@@ -136,6 +142,11 @@ const BUSINESS_CONFIG: Record<
     color: "bg-primary/20 border-primary/40 text-primary-foreground",
     description:
       "Ideal near rivers, lakes, or water bodies with moderate budget.",
+    reasons: [
+      "Water availability in your area supports fish cultivation",
+      "Fish farming offers high income with steady demand",
+      "Your budget range covers initial pond setup costs",
+    ],
   },
   Poultry: {
     label: "Poultry Farming",
@@ -144,6 +155,11 @@ const BUSINESS_CONFIG: Record<
     color: "bg-accent/20 border-accent/40 text-accent-foreground",
     description:
       "Low startup cost, suitable for any location with minimal land.",
+    reasons: [
+      "Poultry requires minimal land and low initial investment",
+      "Year-round income with consistent local market demand",
+      "Easy to start even without prior farming experience",
+    ],
   },
   GoatFarming: {
     label: "Goat Farming",
@@ -151,22 +167,17 @@ const BUSINESS_CONFIG: Record<
     icon: "🐐",
     color: "bg-card border-border",
     description: "Great for hill or dry regions with low to medium investment.",
+    reasons: [
+      "Goats thrive in your terrain and climate conditions",
+      "Low maintenance with high return on investment",
+      "Strong demand for meat and milk in local markets",
+    ],
   },
 };
 
-// ─── WhatsApp helper ───────────────────────────────────────────────────────────
-
-function buildWhatsAppUrl(businessType: BusinessType): string {
-  const biz = BUSINESS_CONFIG[businessType] ?? { label: String(businessType) };
-  const message = encodeURIComponent(
-    `Hi! I completed the AI Business Quiz and got recommendation: ${biz.label}. I need expert help.`,
-  );
-  return `https://wa.me/918986378505?text=${message}`;
-}
-
 // ─── Component ─────────────────────────────────────────────────────────────────
 
-type QuizStep = "loading" | "result" | number;
+type QuizStep = "loading" | "intro" | "result" | number;
 
 export default function AISuggestPage() {
   return (
@@ -197,11 +208,11 @@ function AISuggestInner() {
             setCurrentResult(result);
             setStep("result");
           } else {
-            setStep(0);
+            setStep("intro");
           }
         }
       } catch {
-        if (!cancelled) setStep(0);
+        if (!cancelled) setStep("intro");
       }
     }
     loadSaved();
@@ -247,6 +258,11 @@ function AISuggestInner() {
   function handleRetake() {
     setAnswers({});
     setCurrentResult(null);
+    setStep("intro");
+  }
+
+  function handleStartQuiz() {
+    setAnswers({});
     setStep(0);
   }
 
@@ -272,16 +288,17 @@ function AISuggestInner() {
           >
             <span className="text-4xl mb-3 block">🤖</span>
             <h1 className="text-2xl sm:text-3xl font-display font-bold text-primary-foreground text-balance">
-              AI Business Quiz
+              Find the Best Business for You
             </h1>
             <p className="text-lg font-display text-primary-foreground/80 mt-1">
-              AI व्यवसाय सलाह
+              अपना सबसे अच्छा व्यवसाय खोजें
             </p>
             <p className="mt-3 text-sm text-primary-foreground/70 max-w-md mx-auto text-balance">
-              5 simple questions to find your perfect rural business match.
+              Answer 5 quick questions and our AI will recommend the perfect
+              rural business for your situation.
               <br />
               <span className="text-primary-foreground/60">
-                सही व्यवसाय खोजने के लिए 5 सवाल।
+                5 सवालों में UdyamSathi AI आपको सही व्यवसाय बतायेगा।
               </span>
             </p>
           </motion.div>
@@ -300,6 +317,82 @@ function AISuggestInner() {
                 ))}
               </div>
             </div>
+          )}
+
+          {/* Intro / Start Screen */}
+          {step === "intro" && (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key="intro"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+                className="text-center"
+                data-ocid="ai_suggest.intro.panel"
+              >
+                {/* Feature highlights */}
+                <div className="grid grid-cols-1 gap-3 mb-8 text-left">
+                  {[
+                    {
+                      icon: "🎯",
+                      title: "Personalized for You",
+                      desc: "आपकी स्थिति के अनुसार सलाह / Advice based on your situation",
+                    },
+                    {
+                      icon: "💡",
+                      title: "AI-Powered Analysis",
+                      desc: "स्मार्ट एल्गोरिदम से सर्वोत्तम विकल्प / Best option via smart algorithm",
+                    },
+                    {
+                      icon: "📊",
+                      title: "Saved to Your Dashboard",
+                      desc: "परिणाम आपके डैशबोर्ड में सेव होगा / Result saved to your profile",
+                    },
+                  ].map((item, i) => (
+                    <motion.div
+                      key={item.title}
+                      initial={{ opacity: 0, x: -16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="flex items-start gap-4 rounded-xl border border-border bg-card p-4"
+                    >
+                      <span className="text-2xl flex-shrink-0">
+                        {item.icon}
+                      </span>
+                      <div>
+                        <p className="font-display font-semibold text-foreground text-sm">
+                          {item.title}
+                        </p>
+                        <p className="text-xs text-muted-foreground font-body leading-relaxed mt-0.5">
+                          {item.desc}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.35 }}
+                >
+                  <Button
+                    onClick={handleStartQuiz}
+                    size="lg"
+                    className="w-full gradient-primary text-primary-foreground font-display font-bold text-lg py-6 rounded-xl shadow-elevated hover:opacity-90 transition-smooth"
+                    data-ocid="ai_suggest.find_best_business_button"
+                  >
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Find Best Business / सर्वश्रेष्ठ व्यवसाय खोजें
+                  </Button>
+                  <p className="mt-3 text-sm text-muted-foreground font-body">
+                    ⏱ Takes less than 2 minutes · 2 मिनट से कम समय लगेगा
+                  </p>
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
           )}
 
           {/* Quiz Steps */}
@@ -460,6 +553,7 @@ function ResultCard({ result, isSavedResult, onRetake }: ResultCardProps) {
     icon: "🌱",
     color: "bg-card border-border",
     description: "",
+    reasons: [],
   };
 
   const confidenceColor =
@@ -469,7 +563,11 @@ function ResultCard({ result, isSavedResult, onRetake }: ResultCardProps) {
         ? "bg-accent/20 text-accent-foreground border-accent/40"
         : "bg-muted text-muted-foreground border-border";
 
-  const whatsappUrl = buildWhatsAppUrl(result.businessType);
+  // Prefer backend reasons, fall back to config-level reasons (top 3)
+  const displayReasons =
+    result.reasons && result.reasons.length > 0
+      ? result.reasons.slice(0, 3)
+      : biz.reasons.slice(0, 3);
 
   return (
     <AnimatePresence mode="wait">
@@ -486,11 +584,14 @@ function ResultCard({ result, isSavedResult, onRetake }: ResultCardProps) {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex items-center justify-center gap-2 mb-4 text-sm text-secondary font-body"
+            className="flex items-center justify-center gap-2 mb-4 rounded-lg border border-secondary/30 bg-secondary/10 px-4 py-2.5 text-sm text-secondary font-body"
             data-ocid="ai_suggest.saved_indicator"
           >
-            <span className="text-base">✅</span>
-            <span>Saved to your profile / आपके प्रोफाइल में सेव हो गया</span>
+            <CheckCircle className="w-4 h-4 flex-shrink-0" />
+            <span>
+              Your recommendation has been saved to your dashboard / आपकी
+              सिफारिश डैशबोर्ड में सेव हो गई है
+            </span>
           </motion.div>
         )}
 
@@ -524,14 +625,14 @@ function ResultCard({ result, isSavedResult, onRetake }: ResultCardProps) {
           </p>
         </div>
 
-        {/* Reasons */}
-        {result.reasons && result.reasons.length > 0 && (
+        {/* Top 3 Reasons */}
+        {displayReasons.length > 0 && (
           <div className="rounded-xl border border-border bg-card p-5 mb-4">
             <h3 className="text-sm font-display font-semibold text-foreground mb-3 uppercase tracking-wider">
-              Why this? / यह क्यों?
+              Why this suits you? / यह आपके लिए क्यों?
             </h3>
             <ul className="space-y-2">
-              {result.reasons.map((reason, i) => (
+              {displayReasons.map((reason, i) => (
                 <motion.li
                   key={reason}
                   initial={{ opacity: 0, x: -12 }}
@@ -548,26 +649,27 @@ function ResultCard({ result, isSavedResult, onRetake }: ResultCardProps) {
           </div>
         )}
 
-        {/* Get Expert Call via WhatsApp — prominent CTA */}
+        {/* Get Expert Call — primary CTA */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.35 }}
-          className="mb-4"
+          className="mb-3"
         >
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-3 w-full rounded-xl py-4 px-5 font-body font-semibold text-base text-white transition-smooth focus-ring bg-whatsapp"
+          <Button
+            asChild
+            size="lg"
+            className="w-full gradient-primary text-primary-foreground font-display font-bold text-base py-5 rounded-xl shadow-elevated hover:opacity-90 transition-smooth"
             data-ocid="ai_suggest.get_expert_call_button"
           >
-            <MessageCircle className="w-5 h-5 flex-shrink-0" />
-            <span>Get Expert Call / विशेषज्ञ से बात करें</span>
-            <span className="text-lg flex-shrink-0">📞</span>
-          </a>
+            <Link to="/contact">
+              <Phone className="w-5 h-5 mr-2" />
+              Get Expert Call / विशेषज्ञ से बात करें 📞
+            </Link>
+          </Button>
           <p className="text-xs text-center text-muted-foreground mt-2 font-body">
-            WhatsApp पर तुरंत संपर्क करें · Contact us on WhatsApp
+            हमारी टीम 24 घंटे में संपर्क करेगी · Our team will contact you within 24
+            hours
           </p>
         </motion.div>
 
@@ -575,7 +677,8 @@ function ResultCard({ result, isSavedResult, onRetake }: ResultCardProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
           <Button
             asChild
-            className="gradient-primary text-primary-foreground font-semibold"
+            variant="outline"
+            className="border-secondary/50 text-foreground hover:bg-secondary/10"
             data-ocid="ai_suggest.view_resources_button"
           >
             <Link to="/resources">📦 View Resources / संसाधन देखें</Link>
@@ -586,7 +689,29 @@ function ResultCard({ result, isSavedResult, onRetake }: ResultCardProps) {
             className="border-accent/50 text-foreground hover:bg-accent/10"
             data-ocid="ai_suggest.request_expert_button"
           >
-            <Link to="/request">👨‍🔧 Request Expert / विशेषज्ञ सहायता</Link>
+            <Link to="/request">👨‍🔧 Submit Request / सहायता माँगें</Link>
+          </Button>
+        </div>
+
+        {/* Dashboard link */}
+        <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 mb-4 flex items-center gap-3">
+          <span className="text-xl flex-shrink-0">📊</span>
+          <div className="min-w-0">
+            <p className="text-sm font-body text-foreground">
+              View your saved AI result in your dashboard
+            </p>
+            <p className="text-xs text-muted-foreground">
+              डैशबोर्ड में अपना AI परिणाम देखें
+            </p>
+          </div>
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="flex-shrink-0 ml-auto"
+            data-ocid="ai_suggest.go_dashboard_button"
+          >
+            <Link to="/dashboard">Dashboard</Link>
           </Button>
         </div>
 

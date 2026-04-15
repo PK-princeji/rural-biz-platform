@@ -17,9 +17,9 @@ import TrainingsApi "mixins/trainings-api";
 import PremiumApi "mixins/premium-api";
 import AIApi "mixins/ai-api";
 import ContactsApi "mixins/contacts-api";
-import Migration "migration";
 
-(with migration = Migration.run)
+
+
 actor {
   // Simple admin set — first caller to grantAdmin becomes admin
   let admins = Map.empty<Principal, Bool>();

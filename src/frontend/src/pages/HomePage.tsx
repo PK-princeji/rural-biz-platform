@@ -218,48 +218,40 @@ const STEPS = [
     Icon: UserCheck,
     titleEn: "Register",
     titleHi: "पंजीकरण",
-    descEn: "Create your free account with name, mobile & location.",
-    descHi: "नाम, मोबाइल और स्थान के साथ अपना खाता बनाएं।",
+    descEn: "Create your free account",
+    descHi: "अपना मुफ़्त खाता बनाएं।",
   },
   {
     n: "02",
     Icon: BriefcaseBusiness,
     titleEn: "Submit Problem",
     titleHi: "समस्या दर्ज करें",
-    descEn: "Describe your business challenge and get a unique Case ID.",
-    descHi: "अपनी व्यावसायिक चुनौती बताएं और केस ID पाएं।",
+    descEn: "Tell us about your business idea or challenge",
+    descHi: "अपना व्यवसाय विचार या चुनौती बताएं।",
   },
   {
     n: "03",
-    Icon: CheckCircle2,
-    titleEn: "Case Created",
-    titleHi: "केस बना",
-    descEn: "Your request is logged and assigned to our expert team.",
-    descHi: "आपका अनुरोध दर्ज हो जाता है और विशेषज्ञ टीम को सौंपा जाता है।",
+    Icon: Phone,
+    titleEn: "Get Expert Help",
+    titleHi: "विशेषज्ञ सहायता पाएं",
+    descEn: "Our expert contacts you within 24 hours",
+    descHi: "हमारा विशेषज्ञ 24 घंटे में आपसे संपर्क करता है।",
   },
   {
     n: "04",
-    Icon: Phone,
-    titleEn: "Expert Contact",
-    titleHi: "विशेषज्ञ संपर्क",
-    descEn: "A specialist calls or visits you with a tailored action plan.",
-    descHi: "विशेषज्ञ आपसे संपर्क करता है और कार्य योजना देता है।",
+    Icon: Zap,
+    titleEn: "Start Business",
+    titleHi: "व्यवसाय शुरू करें",
+    descEn: "Get full support to launch your business",
+    descHi: "अपना व्यवसाय शुरू करने के लिए पूरी सहायता पाएं।",
   },
   {
     n: "05",
-    Icon: Zap,
-    titleEn: "Execution",
-    titleHi: "क्रियान्वयन",
-    descEn: "We support setup, training, and resource supply on-ground.",
-    descHi: "हम सेटअप, प्रशिक्षण और संसाधन आपूर्ति में मदद करते हैं।",
-  },
-  {
-    n: "06",
     Icon: TrendingUp,
-    titleEn: "Profit",
-    titleHi: "मुनाफ़ा",
-    descEn: "Your business grows with ongoing monitoring and support.",
-    descHi: "निरंतर निगरानी के साथ आपका व्यवसाय बढ़ता है।",
+    titleEn: "Earn Income",
+    titleHi: "आय अर्जित करें",
+    descEn: "Grow your income with our ongoing guidance",
+    descHi: "हमारे निरंतर मार्गदर्शन से अपनी आय बढ़ाएं।",
   },
 ];
 
@@ -458,7 +450,10 @@ export default function HomePage() {
           <div className="max-w-3xl mx-auto text-center mb-12">
             <Badge className="mb-4 bg-white/20 text-white border-white/30 hover:bg-white/25 font-body text-xs px-3 py-1">
               🌱{" "}
-              {t("Rural Entrepreneurship Platform", "ग्रामीण उद्यमिता प्लेटफार्म")}
+              {t(
+                "UdyamSathi — Empowering Rural India",
+                "उद्यमसाथी — ग्रामीण भारत को सशक्त बनाना",
+              )}
             </Badge>
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-display font-bold leading-tight mb-5 text-balance">
               {t("Start Your Business", "अपना व्यवसाय शुरू करें")}
@@ -467,7 +462,11 @@ export default function HomePage() {
                 {t("with Full Support", "पूरी सहायता के साथ")}
               </span>
             </h1>
-            <p className="text-base sm:text-lg text-white/85 font-body leading-relaxed mb-8 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-white/85 font-body leading-relaxed mb-2 max-w-2xl mx-auto font-semibold tracking-wide">
+              UdyamSathi &mdash;{" "}
+              {t("Skill + Support + System", "कौशल + समर्थन + प्रणाली")}
+            </p>
+            <p className="text-sm sm:text-base text-white/80 font-body leading-relaxed mb-8 max-w-2xl mx-auto">
               {t(
                 "Expert guidance, field support, training and resources — all in one platform for rural entrepreneurs.",
                 "विशेषज्ञ मार्गदर्शन, फील्ड सहायता, प्रशिक्षण और संसाधन — ग्रामीण उद्यमियों के लिए एक ही प्लेटफार्म।",
@@ -673,18 +672,18 @@ export default function HomePage() {
             </h2>
             <p className="text-muted-foreground font-body max-w-lg mx-auto text-sm leading-relaxed">
               {t(
-                "Six clear steps from registration to running a profitable business.",
-                "पंजीकरण से लाभदायक व्यवसाय तक छह स्पष्ट चरण।",
+                "Five clear steps from registration to earning income.",
+                "पंजीकरण से आय अर्जन तक पाँच स्पष्ट चरण।",
               )}
             </p>
           </div>
 
           {/* Steps grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 relative">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 relative">
             {STEPS.map((step, i) => (
               <div
                 key={step.n}
-                className="relative bg-card rounded-2xl p-5 md:p-7 border border-border shadow-subtle hover:shadow-elevated hover:border-accent/40 transition-smooth text-center group"
+                className="relative bg-card rounded-2xl p-5 md:p-6 border border-border shadow-subtle hover:shadow-elevated hover:border-accent/40 transition-smooth text-center group"
                 data-ocid={`home.step_${step.n}_card`}
               >
                 {/* Step number circle */}
@@ -694,7 +693,7 @@ export default function HomePage() {
                   </span>
                 </div>
                 {/* Arrow between steps on desktop */}
-                {i < STEPS.length - 1 && i % 3 !== 2 && (
+                {i < STEPS.length - 1 && (
                   <div className="hidden md:block absolute top-8 -right-3 z-10 text-muted-foreground">
                     <ChevronRight className="w-5 h-5" />
                   </div>
@@ -713,7 +712,7 @@ export default function HomePage() {
           </div>
 
           {/* Journey line label */}
-          <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground font-body">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground font-body">
             <span className="px-3 py-1.5 rounded-full bg-primary/10 text-primary font-semibold">
               {t("Register", "पंजीकरण")}
             </span>
@@ -723,19 +722,15 @@ export default function HomePage() {
             </span>
             <ArrowRight className="w-4 h-4" />
             <span className="px-3 py-1.5 rounded-full bg-muted">
-              {t("Case", "केस")}
+              {t("Expert Help", "विशेषज्ञ सहायता")}
             </span>
             <ArrowRight className="w-4 h-4" />
             <span className="px-3 py-1.5 rounded-full bg-muted">
-              {t("Expert", "विशेषज्ञ")}
-            </span>
-            <ArrowRight className="w-4 h-4" />
-            <span className="px-3 py-1.5 rounded-full bg-muted">
-              {t("Execute", "क्रियान्वयन")}
+              {t("Start Business", "व्यवसाय शुरू करें")}
             </span>
             <ArrowRight className="w-4 h-4" />
             <span className="px-3 py-1.5 rounded-full bg-accent/15 text-accent font-semibold">
-              {t("Profit 💰", "मुनाफ़ा 💰")}
+              {t("Earn Income 💰", "आय अर्जित करें 💰")}
             </span>
           </div>
 
@@ -834,14 +829,14 @@ export default function HomePage() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
                   {t(
-                    "Not Sure Which Business to Start?",
-                    "कौन सा व्यवसाय शुरू करें?",
+                    "Find the Best Business for You",
+                    "आपके लिए सबसे अच्छा व्यवसाय खोजें",
                   )}
                 </h2>
                 <p className="text-white/85 font-body leading-relaxed mb-6 text-sm md:text-base">
                   {t(
-                    "Take our 2-minute quiz. Our AI analyzes your location, skills, and budget to recommend the best business for you — and saves it to your dashboard.",
-                    "हमारा 2 मिनट का क्विज़ लें। हमारा AI आपकी जगह, कौशल और बजट के आधार पर सबसे अच्छा व्यवसाय बताता है।",
+                    "Answer 5 quick questions and our AI will recommend the perfect business for your situation — and save it to your dashboard.",
+                    "5 त्वरित प्रश्नों के उत्तर दें और हमारा AI आपकी स्थिति के लिए सबसे उपयुक्त व्यवसाय बताएगा।",
                   )}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -1038,8 +1033,8 @@ export default function HomePage() {
           </h2>
           <p className="text-white/85 font-body mb-8 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
             {t(
-              "Join rural entrepreneurs across Bihar building sustainable businesses with our expert support and real resources.",
-              "बिहार के ग्रामीण उद्यमियों के साथ जुड़ें जो हमारी विशेषज्ञ सहायता से टिकाऊ व्यवसाय बना रहे हैं।",
+              "Join rural entrepreneurs across Bihar building sustainable businesses with UdyamSathi's expert support and real resources.",
+              "बिहार के ग्रामीण उद्यमियों के साथ उद्यमसाथी की विशेषज्ञ सहायता से टिकाऊ व्यवसाय बनाएं।",
             )}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

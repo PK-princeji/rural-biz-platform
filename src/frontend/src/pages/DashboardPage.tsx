@@ -200,7 +200,7 @@ function formatDate(ts: bigint): string {
 }
 
 function formatCaseId(id: bigint): string {
-  return `RB-${String(id).padStart(4, "0")}`;
+  return `US-${String(id).padStart(4, "0")}`;
 }
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
@@ -428,7 +428,7 @@ function AIResultsSection({
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-display font-bold text-foreground flex items-center gap-2">
           <Bot className="w-5 h-5 text-primary" />
-          {t("AI Recommendation", "AI सुझाव")}
+          {t("AI Business Recommendation", "AI व्यापार सुझाव")}
         </h2>
         {result && (
           <Button
@@ -884,12 +884,18 @@ function DashboardContent() {
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5" />
                     {profile.location}
+                    <span className="text-border mx-1">·</span>
+                    <span className="text-primary font-medium">UdyamSathi</span>
                   </span>
                 ) : (
-                  t(
-                    "Track your business journey here",
-                    "अपनी व्यापार यात्रा यहां देखें",
-                  )
+                  <span className="flex items-center gap-1.5">
+                    {t(
+                      "Track your business journey here",
+                      "अपनी व्यापार यात्रा यहां देखें",
+                    )}
+                    <span className="text-border">·</span>
+                    <span className="text-primary font-medium">UdyamSathi</span>
+                  </span>
                 )}
               </p>
             </>
@@ -898,6 +904,17 @@ function DashboardContent() {
 
         {/* Action buttons */}
         <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <Button
+            asChild
+            size="sm"
+            className="bg-accent hover:bg-accent/90 text-white border-0 font-body font-semibold shadow-subtle transition-smooth"
+            data-ocid="dashboard.request_expert_call_button"
+          >
+            <a href={PHONE_LINK}>
+              <Phone className="w-4 h-4 mr-1.5" />
+              {t("Request Expert Call", "विशेषज्ञ से कॉल करें")}
+            </a>
+          </Button>
           {existingPremiumRequest ? (
             <PremiumBadge />
           ) : (

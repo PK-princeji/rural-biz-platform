@@ -1,4 +1,4 @@
-// Version: 3.0.0
+// Version: 1.0.0
 type AIQuizResult__631367312 =
   {
     businessType : BusinessType__688280956;
@@ -55,26 +55,10 @@ type Expert__837171470 =
 type Internal__8484328<K, V> =
   {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
 type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
-type Map__158565046<K, V> = Map__297112838<K, V>;
-type Map__297112838<K, V> =
-  {var root : Node__46230540<K, V>; var size : Nat__490723111};
-type Map__605269027<K, V> = Map__158565046<K, V>;
 type Nat__490723111 = Nat__920180692;
 type Nat__920180692 = Nat;
 type Node__46230540<K, V> =
   {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
-type OldBusinessType__103299508 =
-  {#agriculture; #fishery; #goatFarming; #poultry};
-type OldUserProfile__416069324 =
-  {
-    aiRecommendation : ?Text;
-    businessType : OldBusinessType__103299508;
-    createdAt : Int;
-    id : Principal;
-    location : Text;
-    mobile : Text;
-    name : Text
-  };
 type PremiumRequestId__225307718 = Nat;
 type PremiumRequest__350211544 =
   {
@@ -145,64 +129,7 @@ type UserProfile__190304746 =
     name : Text;
     whatsapp : Text
   };
-actor ({
-  stable admins :
-    {var root : Node__46230540<Principal, Bool>; var size : Nat__490723111};
-  stable aiResults :
-    {
-      var root : Node__46230540<Principal, AIQuizResult__631367312>;
-      var size : Nat__490723111
-    };
-  stable cases :
-    {
-      var root : Node__46230540<Nat, Case__874865401>;
-      var size : Nat__490723111
-    };
-  stable contactLeads :
-    {
-      var root : Node__46230540<Nat, ContactLead__55592779>;
-      var size : Nat__490723111
-    };
-  stable experts :
-    {
-      var root : Node__46230540<Nat, Expert__837171470>;
-      var size : Nat__490723111
-    };
-  stable nextCaseId : {var value : Nat};
-  stable nextContactLeadId : {var value : Nat};
-  stable nextEnrollmentId : {var value : Nat};
-  stable nextExpertId : {var value : Nat};
-  stable nextPremiumId : {var value : Nat};
-  stable nextResourceId : {var value : Nat};
-  stable nextSupplyRequestId : {var value : Nat};
-  stable nextTrainingId : {var value : Nat};
-  stable premiumRequests :
-    {
-      var root : Node__46230540<Nat, PremiumRequest__350211544>;
-      var size : Nat__490723111
-    };
-  stable resources :
-    {
-      var root : Node__46230540<Nat, Resource__736884683>;
-      var size : Nat__490723111
-    };
-  stable supplyRequests :
-    {
-      var root : Node__46230540<Nat, SupplyRequest__474097380>;
-      var size : Nat__490723111
-    };
-  stable trainingEnrollments :
-    {
-      var root : Node__46230540<Nat, TrainingEnrollment__738176429>;
-      var size : Nat__490723111
-    };
-  stable trainingPrograms :
-    {
-      var root : Node__46230540<Nat, TrainingProgram__49569288>;
-      var size : Nat__490723111
-    };
-  in userProfiles : Map__605269027<Principal, OldUserProfile__416069324>
-}, {
+actor {
   stable admins :
     {var root : Node__46230540<Principal, Bool>; var size : Nat__490723111};
   stable aiResults :
@@ -263,4 +190,4 @@ actor ({
       var root : Node__46230540<Principal, UserProfile__190304746>;
       var size : Nat__490723111
     }
-}) ;
+};

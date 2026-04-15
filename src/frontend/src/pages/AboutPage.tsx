@@ -20,50 +20,53 @@ import { useLanguage } from "../hooks/useLanguage";
 // ─── Team data ─────────────────────────────────────────────────────────────────
 const TEAM = [
   {
-    name: "Rahul Kumar",
-    role: "Founder & CEO",
-    roleHi: "संस्थापक और CEO",
-    desc: "Passionate about rural entrepreneurship with 10+ years experience in agriculture development.",
-    descHi: "कृषि विकास में 10+ वर्षों के अनुभव के साथ ग्रामीण उद्यमिता के प्रति जुनूनी।",
-    initials: "RK",
+    name: "Prince Kumar",
+    role: "Founder & Tech Lead",
+    roleHi: "संस्थापक और टेक लीड",
+    desc: "Visionary behind UdyamSathi, leading technology strategy and platform development to empower rural entrepreneurs across Bihar.",
+    descHi:
+      "UdyamSathi के पीछे के दूरदर्शी, बिहार भर के ग्रामीण उद्यमियों को सशक्त बनाने के लिए प्रौद्योगिकी रणनीति और प्लेटफ़ॉर्म विकास का नेतृत्व करते हैं।",
+    initials: "PK",
     color: "from-primary/80 to-primary",
   },
   {
-    name: "Priya Singh",
-    role: "Head of Operations",
-    roleHi: "संचालन प्रमुख",
-    desc: "Expert in rural logistics and supply chain management for small businesses.",
-    descHi: "छोटे व्यवसायों के लिए ग्रामीण लॉजिस्टिक्स और आपूर्ति श्रृंखला प्रबंधन में विशेषज्ञ।",
-    initials: "PS",
+    name: "Rahul Kumar",
+    role: "Operations Manager",
+    roleHi: "संचालन प्रबंधक",
+    desc: "Manages day-to-day operations, coordinates expert assignments, and ensures smooth service delivery to every user.",
+    descHi:
+      "दिन-प्रतिदिन के संचालन का प्रबंधन करते हैं, विशेषज्ञ असाइनमेंट समन्वित करते हैं, और हर उपयोगकर्ता को सुचारु सेवा सुनिश्चित करते हैं।",
+    initials: "RK",
     color: "from-accent/80 to-accent",
   },
   {
-    name: "Amit Sharma",
-    role: "Lead Expert – Agriculture",
-    roleHi: "कृषि प्रमुख विशेषज्ञ",
-    desc: "Certified agriculture specialist helping farmers maximize their yield and income.",
-    descHi: "प्रमाणित कृषि विशेषज्ञ जो किसानों को उनकी उपज और आय बढ़ाने में मदद करते हैं।",
-    initials: "AS",
+    name: "Gautam Kumar Yadav",
+    role: "Field Specialist",
+    roleHi: "फील्ड विशेषज्ञ",
+    desc: "On-ground expert who visits farms, provides hands-on training, and supports users during business setup and execution.",
+    descHi:
+      "जमीनी विशेषज्ञ जो खेतों का दौरा करते हैं, व्यावहारिक प्रशिक्षण देते हैं, और व्यवसाय स्थापना व निष्पादन में उपयोगकर्ताओं का समर्थन करते हैं।",
+    initials: "GY",
     color: "from-primary/60 to-accent/80",
   },
   {
-    name: "Sunita Devi",
-    role: "Training Coordinator",
-    roleHi: "प्रशिक्षण समन्वयक",
-    desc: "Empowering women entrepreneurs through practical business training programs.",
+    name: "Mayank Kumar",
+    role: "Marketing & Outreach",
+    roleHi: "मार्केटिंग और आउटरीच",
+    desc: "Drives user acquisition and awareness campaigns, connecting rural communities with UdyamSathi's services.",
     descHi:
-      "व्यावहारिक व्यावसायिक प्रशिक्षण कार्यक्रमों के माध्यम से महिला उद्यमियों को सशक्त बनाना।",
-    initials: "SD",
+      "उपयोगकर्ता अधिग्रहण और जागरूकता अभियान चलाते हैं, ग्रामीण समुदायों को UdyamSathi की सेवाओं से जोड़ते हैं।",
+    initials: "MK",
     color: "from-accent to-secondary",
   },
   {
-    name: "Rajesh Yadav",
-    role: "Technology Lead",
-    roleHi: "प्रौद्योगिकी प्रमुख",
-    desc: "Building digital solutions to connect rural entrepreneurs with modern market opportunities.",
+    name: "Suhani Kumari",
+    role: "Women Empowerment Lead",
+    roleHi: "महिला सशक्तिकरण प्रमुख",
+    desc: "Champion for women entrepreneurs, running dedicated programs to help women start and grow their own businesses.",
     descHi:
-      "ग्रामीण उद्यमियों को आधुनिक बाजार के अवसरों से जोड़ने के लिए डिजिटल समाधान बनाना।",
-    initials: "RY",
+      "महिला उद्यमियों की समर्थक, महिलाओं को अपना व्यवसाय शुरू करने और विकसित करने में मदद के लिए समर्पित कार्यक्रम चलाती हैं।",
+    initials: "SK",
     color: "from-primary to-accent/60",
   },
 ];
@@ -177,8 +180,8 @@ export default function AboutPage() {
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground font-body leading-relaxed max-w-2xl mx-auto">
             {t(
-              "Rural Biz Platform was born from a simple belief: every rural family deserves the tools, knowledge, and support to build a successful business. We bridge the gap between rural potential and real-world opportunity.",
-              "Rural Biz Platform एक सरल विश्वास से उत्पन्न हुआ: प्रत्येक ग्रामीण परिवार एक सफल व्यवसाय बनाने के लिए उपकरण, ज्ञान और समर्थन का हकदार है। हम ग्रामीण क्षमता और वास्तविक दुनिया के अवसर के बीच की खाई को पाटते हैं।",
+              "UdyamSathi was born from a simple belief: every rural family deserves the tools, knowledge, and support to build a successful business. We bridge the gap between rural potential and real-world opportunity.",
+              "UdyamSathi एक सरल विश्वास से उत्पन्न हुआ: प्रत्येक ग्रामीण परिवार एक सफल व्यवसाय बनाने के लिए उपकरण, ज्ञान और समर्थन का हकदार है। हम ग्रामीण क्षमता और वास्तविक दुनिया के अवसर के बीच की खाई को पाटते हैं।",
             )}
           </p>
         </div>
@@ -360,7 +363,7 @@ export default function AboutPage() {
               {t("Our Team", "हमारी टीम")}
             </Badge>
             <h2 className="font-display font-bold text-2xl sm:text-3xl text-foreground mb-3">
-              {t("The People Behind Rural Biz", "Rural Biz के पीछे के लोग")}
+              {t("The People Behind UdyamSathi", "UdyamSathi के पीछे के लोग")}
             </h2>
             <p className="text-sm text-muted-foreground font-body max-w-xl mx-auto">
               {t(
