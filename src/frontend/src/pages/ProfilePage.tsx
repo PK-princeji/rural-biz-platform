@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Briefcase,
   Copy,
@@ -19,7 +20,7 @@ import {
   Phone,
   User,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Specialization as BackendBusinessType } from "../backend.d";
 import { Layout } from "../components/Layout";
@@ -50,6 +51,14 @@ const BUSINESS_TYPE_MAP: Record<BusinessType, BackendBusinessType> = {
   GoatFarming: BackendBusinessType.goatFarming,
 };
 
+// Reverse map for loading saved profile
+const BACKEND_TO_FRONTEND: Record<string, BusinessType> = {
+  agriculture: "Farming",
+  fishery: "Fishery",
+  poultry: "Poultry",
+  goatFarming: "GoatFarming",
+};
+
 function ProfileContent() {
   const { principal } = useAuth();
   const backend = useBackend();
@@ -61,8 +70,38 @@ function ProfileContent() {
     location: "",
     businessType: undefined,
   });
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  // Load existing profile on mount
+  useEffect(() => {
+    let cancelled = false;
+    async function loadProfile() {
+      setLoadingProfile(true);
+      try {
+        const profile = await backend.getCallerUserProfile();
+        if (!cancelled && profile) {
+          setForm({
+            name: profile.name || "",
+            mobile: profile.mobile || "",
+            whatsapp: profile.whatsapp || "",
+            location: profile.location || "",
+            businessType:
+              BACKEND_TO_FRONTEND[String(profile.businessType)] ?? undefined,
+          });
+        }
+      } catch {
+        // If loading fails, start with empty form
+      } finally {
+        if (!cancelled) setLoadingProfile(false);
+      }
+    }
+    loadProfile();
+    return () => {
+      cancelled = true;
+    };
+  }, [backend]);
 
   const handleChange = (field: keyof UserProfileFormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -101,6 +140,23 @@ function ProfileContent() {
       toast.success("Principal copied to clipboard!");
     }
   };
+
+  if (loadingProfile) {
+    return (
+      <div
+        className="max-w-2xl mx-auto px-4 sm:px-6 py-10 space-y-6"
+        data-ocid="profile.loading_state"
+      >
+        <Skeleton className="h-8 w-48 rounded-lg" />
+        <Skeleton className="h-24 w-full rounded-xl" />
+        <div className="space-y-4">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <Skeleton key={i} className="h-12 w-full rounded-lg" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">

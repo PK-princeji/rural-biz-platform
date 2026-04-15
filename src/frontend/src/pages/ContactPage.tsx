@@ -52,7 +52,7 @@ const FAQS = [
   },
   {
     q: "Is the Rural Biz Platform free to use?",
-    a: "Yes! Basic services — including submitting requests, tracking cases, and accessing resources — are completely free. Premium support options for faster response and dedicated experts will be available soon.",
+    a: "Yes! Basic services on UdyamSathi — including submitting requests, tracking cases, and accessing resources — are completely free. Premium support options for faster response and dedicated experts will be available soon.",
   },
   {
     q: "How do I update my profile or mobile number?",

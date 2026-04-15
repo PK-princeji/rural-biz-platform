@@ -22,6 +22,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Layout } from "../components/Layout";
+import { useAuth } from "../hooks/useAuth";
 import type { BusinessType } from "../types";
 
 // ─── Sector helpers ──────────────────────────────────────────────────────────
@@ -194,6 +195,7 @@ function TrainingCardSkeleton({ n }: { n: number }) {
 
 export default function TrainingsPage() {
   const backend = useBackend();
+  const { isAuthenticated } = useAuth();
   const [programs, setPrograms] = useState<TrainingProgram[]>([]);
   const [enrollments, setEnrollments] = useState<TrainingEnrollment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -204,12 +206,19 @@ export default function TrainingsPage() {
     async function load() {
       setLoading(true);
       try {
-        const [progs, enrs] = await Promise.all([
-          backend.listTrainingPrograms(),
-          backend.getMyTrainingEnrollments(),
-        ]);
+        // Always fetch programs (public endpoint)
+        const progs = await backend.listTrainingPrograms();
         setPrograms(progs.filter((p) => p.isActive));
-        setEnrollments(enrs);
+
+        // Only fetch enrollments if user is authenticated
+        if (isAuthenticated) {
+          try {
+            const enrs = await backend.getMyTrainingEnrollments();
+            setEnrollments(enrs);
+          } catch {
+            // Enrollment fetch failure is non-blocking
+          }
+        }
       } catch {
         toast.error("Could not load training programs. Please try again.");
       } finally {
@@ -217,7 +226,7 @@ export default function TrainingsPage() {
       }
     }
     load();
-  }, [backend]);
+  }, [backend, isAuthenticated]);
 
   const enrollmentMap = useMemo(() => {
     const map = new Map<bigint, TrainingEnrollment>();
@@ -249,6 +258,17 @@ export default function TrainingsPage() {
   }, [programs, activeFilter]);
 
   async function handleEnroll(programId: bigint) {
+    if (!isAuthenticated) {
+      toast.error("Please log in to enroll in a training program.", {
+        action: {
+          label: "Log In",
+          onClick: () => {
+            window.location.href = "/login";
+          },
+        },
+      });
+      return;
+    }
     setEnrollingId(programId);
     try {
       const result = await backend.enrollInTraining({ programId });

@@ -61,27 +61,13 @@ const STATUS_LABEL: Record<string, string> = {
   cancelled: "Cancelled",
 };
 
-const STATUS_COLOR: Record<string, React.CSSProperties> = {
-  pending: {
-    backgroundColor: "#fef9c3",
-    color: "#854d0e",
-    borderColor: "#fde047",
-  },
-  processing: {
-    backgroundColor: "#dbeafe",
-    color: "#1e40af",
-    borderColor: "#93c5fd",
-  },
-  delivered: {
-    backgroundColor: "#dcfce7",
-    color: "#166534",
-    borderColor: "#86efac",
-  },
-  cancelled: {
-    backgroundColor: "#fee2e2",
-    color: "#991b1b",
-    borderColor: "#fca5a5",
-  },
+const STATUS_COLOR: Record<string, string> = {
+  pending:
+    "bg-yellow-100/80 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-700",
+  processing:
+    "bg-blue-100/80 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700",
+  delivered: "bg-accent/10 text-accent border-accent/30",
+  cancelled: "bg-destructive/10 text-destructive border-destructive/30",
 };
 
 // ─── Request Modal ───────────────────────────────────────────────────────────
@@ -346,13 +332,10 @@ function MyRequestRow({
       </div>
       <div className="shrink-0 flex flex-col items-end gap-1">
         <span
-          className="text-xs font-body font-medium px-2 py-0.5 rounded-full border"
-          style={
-            STATUS_COLOR[statusStr] ?? {
-              backgroundColor: "var(--muted)",
-              color: "var(--muted-foreground)",
-            }
-          }
+          className={`text-xs font-body font-medium px-2 py-0.5 rounded-full border ${
+            STATUS_COLOR[statusStr] ??
+            "bg-muted text-muted-foreground border-border"
+          }`}
         >
           {STATUS_LABEL[statusStr] ?? statusStr}
         </span>

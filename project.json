@@ -1,31 +1,25 @@
 {
-  "overview": "UdyamSathi is a rural entrepreneurship platform helping users in Bihar, India start and run small businesses in agriculture, fishery, poultry, and goat farming. It connects rural users with experts for guidance, field support, training, and resource supply — with full case management, AI business recommendations, and a real backend that captures leads and tracks every user journey.",
+  "overview": "UdyamSathi is a rural entrepreneurship platform on the Internet Computer that helps farmers, youth, and women entrepreneurs in India start and run small businesses in agriculture, fishery, poultry, and goat farming. It connects users with expert guidance, training programs, and resource supply — tracking every case from submission through expert assignment to completion.",
   "features": [
-    "Company rebranded to UdyamSathi with consistent branding across all pages",
-    "Complete footer with address, phone, WhatsApp, email, and working hours",
-    "Contact page with click-to-call, WhatsApp chat button, and working hours (Mon–Sat 9AM–6PM)",
-    "Real backend with persistent storage for users, cases, and contact leads",
-    "Case management: automatic Case ID generation, Pending/In Progress/Completed status",
-    "Admin panel: view all cases, assign experts, update status and notes",
-    "User dashboard: My Requests, AI results, progress tracker, Request Expert Call button",
-    "AI business recommendation quiz with results saved to user profile",
-    "5-step How It Works: Register → Submit → Expert Help → Start Business → Earn Income",
-    "Team section with all 5 UdyamSathi team members",
-    "Pricing section: Consultation, Setup, Training, Premium tiers",
-    "Training enrollment with dashboard tracking (Enrolled/Ongoing/Completed)",
+    "Full backend with real data persistence — cases, profiles, trainings, resources, AI results, premium requests, and contact leads all stored in canister state",
+    "Internet Identity login with protected routes and admin panel",
+    "Service request system with auto-generated Case IDs and status tracking (Pending / In Progress / Completed)",
+    "Training enrollment with dashboard visibility and enrollment confirmation",
+    "AI business suggestion quiz with persistent result saved to user profile",
     "Resource catalog with supply request system",
-    "Mobile-responsive green + blue design throughout"
+    "Form-based premium support upgrade with admin contact workflow",
+    "Admin panel showing all submissions — cases, enrollments, contacts, supply requests, premium requests",
+    "About page with real UdyamSathi team: Prince Kumar, Rahul Kumar, Gautam Kumar Yadav, Mayank Kumar, Suhani Kumari"
   ],
-  "category": "business",
+  "category": "productivity",
   "tags": [
     "rural-entrepreneurship",
-    "bihar",
+    "agriculture",
     "india",
     "case-management",
-    "lead-generation",
-    "agriculture",
-    "small-business",
-    "expert-matching"
+    "training",
+    "ai-suggestion",
+    "internet-computer"
   ],
-  "last_updated": "2026-04-15T22:49:35.163Z"
+  "last_updated": "2026-04-15T23:15:26.839Z"
 }

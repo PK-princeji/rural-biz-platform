@@ -65,22 +65,12 @@ const STATUS_LABELS: Record<string, string> = {
   completed: "Completed",
 };
 
-const STATUS_COLORS: Record<string, React.CSSProperties> = {
-  pending: {
-    backgroundColor: "#fef9c3",
-    color: "#854d0e",
-    borderColor: "#fde047",
-  },
-  inProgress: {
-    backgroundColor: "#dbeafe",
-    color: "#1e40af",
-    borderColor: "#93c5fd",
-  },
-  completed: {
-    backgroundColor: "#dcfce7",
-    color: "#166534",
-    borderColor: "#86efac",
-  },
+const STATUS_COLORS: Record<string, string> = {
+  pending:
+    "bg-yellow-100/80 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-700",
+  inProgress:
+    "bg-blue-100/80 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700",
+  completed: "bg-accent/10 text-accent border-accent/30",
 };
 
 // ─── Skeletons ───────────────────────────────────────────────────────────────
@@ -148,15 +138,11 @@ function ExpertCard({ expert, index, onToggle }: ExpertCardProps) {
               </p>
               <Badge
                 variant="outline"
-                className="text-xs font-body"
-                style={
+                className={`text-xs font-body ${
                   expert.isActive
-                    ? { borderColor: "#86efac", color: "#166534" }
-                    : {
-                        borderColor: "var(--border)",
-                        color: "var(--muted-foreground)",
-                      }
-                }
+                    ? "border-accent/40 text-accent"
+                    : "border-border text-muted-foreground"
+                }`}
               >
                 {expert.isActive ? "Active" : "Inactive"}
               </Badge>
@@ -494,7 +480,7 @@ function CasesTab({ cases, experts, loading, onSaveCase }: CasesTabProps) {
     {
       label: "Pending",
       value: pending,
-      icon: <Clock className="w-5 h-5" style={{ color: "#92400e" }} />,
+      icon: <Clock className="w-5 h-5 text-yellow-700 dark:text-yellow-400" />,
       bg: "bg-primary/5",
       ocid: "admin.stat_pending_card",
     },
@@ -648,8 +634,7 @@ function CasesTab({ cases, experts, loading, onSaveCase }: CasesTabProps) {
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Badge
-                        className="text-xs font-body border"
-                        style={STATUS_COLORS[c.status] ?? {}}
+                        className={`text-xs font-body border ${STATUS_COLORS[c.status] ?? ""}`}
                       >
                         {STATUS_LABELS[c.status] ?? c.status}
                       </Badge>
