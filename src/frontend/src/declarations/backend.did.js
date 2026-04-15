@@ -50,15 +50,47 @@ export const Resource = IDL.Record({
   'description' : IDL.Text,
   'category' : ResourceCategory,
 });
-export const UserId = IDL.Principal;
 export const BusinessType = IDL.Variant({
   'fishery' : IDL.Null,
   'goatFarming' : IDL.Null,
   'poultry' : IDL.Null,
   'agriculture' : IDL.Null,
 });
+export const CreateTrainingInput = IDL.Record({
+  'title' : IDL.Text,
+  'duration' : IDL.Text,
+  'description' : IDL.Text,
+  'sector' : BusinessType,
+});
+export const TrainingId = IDL.Nat;
+export const TrainingProgram = IDL.Record({
+  'id' : TrainingId,
+  'title' : IDL.Text,
+  'duration' : IDL.Text,
+  'createdAt' : Timestamp,
+  'description' : IDL.Text,
+  'sector' : BusinessType,
+  'isActive' : IDL.Bool,
+});
+export const EnrollTrainingInput = IDL.Record({ 'programId' : TrainingId });
+export const EnrollmentId = IDL.Nat;
+export const EnrollmentStatus = IDL.Variant({
+  'enrolled' : IDL.Null,
+  'completed' : IDL.Null,
+  'ongoing' : IDL.Null,
+});
+export const UserId = IDL.Principal;
+export const TrainingEnrollment = IDL.Record({
+  'id' : EnrollmentId,
+  'status' : EnrollmentStatus,
+  'userId' : UserId,
+  'updatedAt' : Timestamp,
+  'enrolledAt' : Timestamp,
+  'programId' : TrainingId,
+});
 export const UserProfile = IDL.Record({
   'id' : UserId,
+  'aiRecommendation' : IDL.Opt(IDL.Text),
   'name' : IDL.Text,
   'createdAt' : Timestamp,
   'businessType' : BusinessType,
@@ -83,6 +115,23 @@ export const Case = IDL.Record({
   'assignedExpertId' : IDL.Opt(ExpertId),
   'adminNotes' : IDL.Opt(IDL.Text),
 });
+export const AIQuizResult = IDL.Record({
+  'reasons' : IDL.Vec(IDL.Text),
+  'createdAt' : Timestamp,
+  'businessType' : BusinessType,
+  'confidence' : IDL.Text,
+});
+export const PremiumRequestId = IDL.Nat;
+export const PremiumRequest = IDL.Record({
+  'id' : PremiumRequestId,
+  'userId' : UserId,
+  'name' : IDL.Text,
+  'createdAt' : Timestamp,
+  'email' : IDL.Text,
+  'isContacted' : IDL.Bool,
+  'mobile' : IDL.Text,
+  'reason' : IDL.Text,
+});
 export const SupplyRequestId = IDL.Nat;
 export const SupplyRequestStatus = IDL.Variant({
   'cancelled' : IDL.Null,
@@ -100,15 +149,29 @@ export const SupplyRequest = IDL.Record({
   'quantity' : IDL.Nat,
 });
 export const SaveProfileInput = IDL.Record({
+  'aiRecommendation' : IDL.Opt(IDL.Text),
   'name' : IDL.Text,
   'businessType' : BusinessType,
   'mobile' : IDL.Text,
   'location' : IDL.Text,
 });
+export const QuizAnswers = IDL.Record({
+  'interest' : IDL.Text,
+  'experience' : IDL.Text,
+  'budget' : IDL.Text,
+  'location' : IDL.Text,
+  'landAvailable' : IDL.Text,
+});
 export const CreateCaseInput = IDL.Record({
   'businessType' : BusinessType,
   'description' : IDL.Text,
   'photoUrl' : IDL.Opt(IDL.Text),
+});
+export const CreatePremiumRequestInput = IDL.Record({
+  'name' : IDL.Text,
+  'email' : IDL.Text,
+  'mobile' : IDL.Text,
+  'reason' : IDL.Text,
 });
 export const CreateSupplyRequestInput = IDL.Record({
   'resourceId' : ResourceId,
@@ -125,15 +188,42 @@ export const idlService = IDL.Service({
   'addExpert' : IDL.Func([CreateExpertInput], [Expert], []),
   'addResource' : IDL.Func([CreateResourceInput], [Resource], []),
   'checkIsAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'createTrainingProgram' : IDL.Func(
+      [CreateTrainingInput],
+      [TrainingProgram],
+      [],
+    ),
+  'enrollInTraining' : IDL.Func(
+      [EnrollTrainingInput],
+      [TrainingEnrollment],
+      [],
+    ),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCase' : IDL.Func([CaseId], [IDL.Opt(Case)], ['query']),
   'getExpert' : IDL.Func([ExpertId], [IDL.Opt(Expert)], ['query']),
+  'getMyAIQuizResult' : IDL.Func([], [IDL.Opt(AIQuizResult)], ['query']),
   'getMyCases' : IDL.Func([], [IDL.Vec(Case)], ['query']),
+  'getMyPremiumRequest' : IDL.Func([], [IDL.Opt(PremiumRequest)], ['query']),
   'getMySupplyRequests' : IDL.Func([], [IDL.Vec(SupplyRequest)], ['query']),
+  'getMyTrainingEnrollments' : IDL.Func(
+      [],
+      [IDL.Vec(TrainingEnrollment)],
+      ['query'],
+    ),
+  'getProgramEnrollments' : IDL.Func(
+      [TrainingId],
+      [IDL.Vec(TrainingEnrollment)],
+      ['query'],
+    ),
   'getResource' : IDL.Func([ResourceId], [IDL.Opt(Resource)], ['query']),
   'getSupplyRequest' : IDL.Func(
       [SupplyRequestId],
       [IDL.Opt(SupplyRequest)],
+      ['query'],
+    ),
+  'getTrainingProgram' : IDL.Func(
+      [TrainingId],
+      [IDL.Opt(TrainingProgram)],
       ['query'],
     ),
   'getUserProfile' : IDL.Func([UserId], [IDL.Opt(UserProfile)], ['query']),
@@ -141,20 +231,35 @@ export const idlService = IDL.Service({
   'listAllCases' : IDL.Func([], [IDL.Vec(Case)], ['query']),
   'listAllSupplyRequests' : IDL.Func([], [IDL.Vec(SupplyRequest)], ['query']),
   'listExperts' : IDL.Func([], [IDL.Vec(Expert)], ['query']),
+  'listPremiumRequests' : IDL.Func([], [IDL.Vec(PremiumRequest)], ['query']),
   'listResources' : IDL.Func([], [IDL.Vec(Resource)], ['query']),
+  'listTrainingPrograms' : IDL.Func([], [IDL.Vec(TrainingProgram)], ['query']),
   'listUserProfiles' : IDL.Func([], [IDL.Vec(UserProfile)], ['query']),
+  'markPremiumRequestContacted' : IDL.Func([PremiumRequestId], [], []),
   'saveCallerUserProfile' : IDL.Func([SaveProfileInput], [], []),
   'setExpertActive' : IDL.Func([ExpertId, IDL.Bool], [IDL.Opt(Expert)], []),
+  'submitAIQuiz' : IDL.Func([QuizAnswers], [AIQuizResult], []),
   'submitCase' : IDL.Func([CreateCaseInput], [Case], []),
+  'submitPremiumRequest' : IDL.Func(
+      [CreatePremiumRequestInput],
+      [PremiumRequest],
+      [],
+    ),
   'submitSupplyRequest' : IDL.Func(
       [CreateSupplyRequestInput],
       [SupplyRequest],
       [],
     ),
+  'toggleTrainingProgramActive' : IDL.Func([TrainingId], [], []),
   'updateCase' : IDL.Func([CaseId, UpdateCaseInput], [IDL.Opt(Case)], []),
   'updateSupplyRequestStatus' : IDL.Func(
       [SupplyRequestId, SupplyRequestStatus],
       [IDL.Opt(SupplyRequest)],
+      [],
+    ),
+  'updateTrainingEnrollmentStatus' : IDL.Func(
+      [EnrollmentId, EnrollmentStatus],
+      [],
       [],
     ),
 });
@@ -204,15 +309,47 @@ export const idlFactory = ({ IDL }) => {
     'description' : IDL.Text,
     'category' : ResourceCategory,
   });
-  const UserId = IDL.Principal;
   const BusinessType = IDL.Variant({
     'fishery' : IDL.Null,
     'goatFarming' : IDL.Null,
     'poultry' : IDL.Null,
     'agriculture' : IDL.Null,
   });
+  const CreateTrainingInput = IDL.Record({
+    'title' : IDL.Text,
+    'duration' : IDL.Text,
+    'description' : IDL.Text,
+    'sector' : BusinessType,
+  });
+  const TrainingId = IDL.Nat;
+  const TrainingProgram = IDL.Record({
+    'id' : TrainingId,
+    'title' : IDL.Text,
+    'duration' : IDL.Text,
+    'createdAt' : Timestamp,
+    'description' : IDL.Text,
+    'sector' : BusinessType,
+    'isActive' : IDL.Bool,
+  });
+  const EnrollTrainingInput = IDL.Record({ 'programId' : TrainingId });
+  const EnrollmentId = IDL.Nat;
+  const EnrollmentStatus = IDL.Variant({
+    'enrolled' : IDL.Null,
+    'completed' : IDL.Null,
+    'ongoing' : IDL.Null,
+  });
+  const UserId = IDL.Principal;
+  const TrainingEnrollment = IDL.Record({
+    'id' : EnrollmentId,
+    'status' : EnrollmentStatus,
+    'userId' : UserId,
+    'updatedAt' : Timestamp,
+    'enrolledAt' : Timestamp,
+    'programId' : TrainingId,
+  });
   const UserProfile = IDL.Record({
     'id' : UserId,
+    'aiRecommendation' : IDL.Opt(IDL.Text),
     'name' : IDL.Text,
     'createdAt' : Timestamp,
     'businessType' : BusinessType,
@@ -237,6 +374,23 @@ export const idlFactory = ({ IDL }) => {
     'assignedExpertId' : IDL.Opt(ExpertId),
     'adminNotes' : IDL.Opt(IDL.Text),
   });
+  const AIQuizResult = IDL.Record({
+    'reasons' : IDL.Vec(IDL.Text),
+    'createdAt' : Timestamp,
+    'businessType' : BusinessType,
+    'confidence' : IDL.Text,
+  });
+  const PremiumRequestId = IDL.Nat;
+  const PremiumRequest = IDL.Record({
+    'id' : PremiumRequestId,
+    'userId' : UserId,
+    'name' : IDL.Text,
+    'createdAt' : Timestamp,
+    'email' : IDL.Text,
+    'isContacted' : IDL.Bool,
+    'mobile' : IDL.Text,
+    'reason' : IDL.Text,
+  });
   const SupplyRequestId = IDL.Nat;
   const SupplyRequestStatus = IDL.Variant({
     'cancelled' : IDL.Null,
@@ -254,15 +408,29 @@ export const idlFactory = ({ IDL }) => {
     'quantity' : IDL.Nat,
   });
   const SaveProfileInput = IDL.Record({
+    'aiRecommendation' : IDL.Opt(IDL.Text),
     'name' : IDL.Text,
     'businessType' : BusinessType,
     'mobile' : IDL.Text,
     'location' : IDL.Text,
   });
+  const QuizAnswers = IDL.Record({
+    'interest' : IDL.Text,
+    'experience' : IDL.Text,
+    'budget' : IDL.Text,
+    'location' : IDL.Text,
+    'landAvailable' : IDL.Text,
+  });
   const CreateCaseInput = IDL.Record({
     'businessType' : BusinessType,
     'description' : IDL.Text,
     'photoUrl' : IDL.Opt(IDL.Text),
+  });
+  const CreatePremiumRequestInput = IDL.Record({
+    'name' : IDL.Text,
+    'email' : IDL.Text,
+    'mobile' : IDL.Text,
+    'reason' : IDL.Text,
   });
   const CreateSupplyRequestInput = IDL.Record({
     'resourceId' : ResourceId,
@@ -279,15 +447,42 @@ export const idlFactory = ({ IDL }) => {
     'addExpert' : IDL.Func([CreateExpertInput], [Expert], []),
     'addResource' : IDL.Func([CreateResourceInput], [Resource], []),
     'checkIsAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'createTrainingProgram' : IDL.Func(
+        [CreateTrainingInput],
+        [TrainingProgram],
+        [],
+      ),
+    'enrollInTraining' : IDL.Func(
+        [EnrollTrainingInput],
+        [TrainingEnrollment],
+        [],
+      ),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCase' : IDL.Func([CaseId], [IDL.Opt(Case)], ['query']),
     'getExpert' : IDL.Func([ExpertId], [IDL.Opt(Expert)], ['query']),
+    'getMyAIQuizResult' : IDL.Func([], [IDL.Opt(AIQuizResult)], ['query']),
     'getMyCases' : IDL.Func([], [IDL.Vec(Case)], ['query']),
+    'getMyPremiumRequest' : IDL.Func([], [IDL.Opt(PremiumRequest)], ['query']),
     'getMySupplyRequests' : IDL.Func([], [IDL.Vec(SupplyRequest)], ['query']),
+    'getMyTrainingEnrollments' : IDL.Func(
+        [],
+        [IDL.Vec(TrainingEnrollment)],
+        ['query'],
+      ),
+    'getProgramEnrollments' : IDL.Func(
+        [TrainingId],
+        [IDL.Vec(TrainingEnrollment)],
+        ['query'],
+      ),
     'getResource' : IDL.Func([ResourceId], [IDL.Opt(Resource)], ['query']),
     'getSupplyRequest' : IDL.Func(
         [SupplyRequestId],
         [IDL.Opt(SupplyRequest)],
+        ['query'],
+      ),
+    'getTrainingProgram' : IDL.Func(
+        [TrainingId],
+        [IDL.Opt(TrainingProgram)],
         ['query'],
       ),
     'getUserProfile' : IDL.Func([UserId], [IDL.Opt(UserProfile)], ['query']),
@@ -295,20 +490,39 @@ export const idlFactory = ({ IDL }) => {
     'listAllCases' : IDL.Func([], [IDL.Vec(Case)], ['query']),
     'listAllSupplyRequests' : IDL.Func([], [IDL.Vec(SupplyRequest)], ['query']),
     'listExperts' : IDL.Func([], [IDL.Vec(Expert)], ['query']),
+    'listPremiumRequests' : IDL.Func([], [IDL.Vec(PremiumRequest)], ['query']),
     'listResources' : IDL.Func([], [IDL.Vec(Resource)], ['query']),
+    'listTrainingPrograms' : IDL.Func(
+        [],
+        [IDL.Vec(TrainingProgram)],
+        ['query'],
+      ),
     'listUserProfiles' : IDL.Func([], [IDL.Vec(UserProfile)], ['query']),
+    'markPremiumRequestContacted' : IDL.Func([PremiumRequestId], [], []),
     'saveCallerUserProfile' : IDL.Func([SaveProfileInput], [], []),
     'setExpertActive' : IDL.Func([ExpertId, IDL.Bool], [IDL.Opt(Expert)], []),
+    'submitAIQuiz' : IDL.Func([QuizAnswers], [AIQuizResult], []),
     'submitCase' : IDL.Func([CreateCaseInput], [Case], []),
+    'submitPremiumRequest' : IDL.Func(
+        [CreatePremiumRequestInput],
+        [PremiumRequest],
+        [],
+      ),
     'submitSupplyRequest' : IDL.Func(
         [CreateSupplyRequestInput],
         [SupplyRequest],
         [],
       ),
+    'toggleTrainingProgramActive' : IDL.Func([TrainingId], [], []),
     'updateCase' : IDL.Func([CaseId, UpdateCaseInput], [IDL.Opt(Case)], []),
     'updateSupplyRequestStatus' : IDL.Func(
         [SupplyRequestId, SupplyRequestStatus],
         [IDL.Opt(SupplyRequest)],
+        [],
+      ),
+    'updateTrainingEnrollmentStatus' : IDL.Func(
+        [EnrollmentId, EnrollmentStatus],
+        [],
         [],
       ),
   });

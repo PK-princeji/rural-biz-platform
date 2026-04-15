@@ -1,108 +1,120 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
   AlertCircle,
+  BookOpen,
   Briefcase,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
   ChevronUp,
   Clock,
+  Crown,
   FileText,
+  GraduationCap,
   MapPin,
   Package,
   PlusCircle,
   User,
-  XCircle,
 } from "lucide-react";
 import { useState } from "react";
-import type { Case, SupplyRequest, UserProfile } from "../backend.d";
-import { BusinessType, CaseStatus, SupplyRequestStatus } from "../backend.d";
+import type {
+  Case,
+  PremiumRequest,
+  SupplyRequest,
+  TrainingEnrollment,
+  TrainingProgram,
+  UserProfile,
+} from "../backend.d";
+import {
+  CaseStatus,
+  EnrollmentStatus,
+  Specialization,
+  SupplyRequestStatus,
+} from "../backend.d";
 import { Layout } from "../components/Layout";
+import {
+  PremiumBadge,
+  PremiumUpgradeModal,
+} from "../components/PremiumUpgradeModal";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { useBackend } from "../hooks/useBackend";
+import { useLanguage } from "../hooks/useLanguage";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const BUSINESS_LABEL: Record<BusinessType, string> = {
-  [BusinessType.agriculture]: "Farming",
-  [BusinessType.fishery]: "Fishery",
-  [BusinessType.poultry]: "Poultry",
-  [BusinessType.goatFarming]: "Goat Farming",
+const BUSINESS_LABEL: Record<Specialization, string> = {
+  [Specialization.agriculture]: "Farming",
+  [Specialization.fishery]: "Fishery",
+  [Specialization.poultry]: "Poultry",
+  [Specialization.goatFarming]: "Goat Farming",
 };
 
 const CASE_STATUS_CONFIG: Record<
   CaseStatus,
-  { label: string; style: React.CSSProperties; icon: React.ReactNode }
+  { label: string; className: string; icon: React.ReactNode }
 > = {
   [CaseStatus.pending]: {
     label: "Pending",
-    style: {
-      backgroundColor: "#fef9c3",
-      color: "#854d0e",
-      borderColor: "#fde047",
-    },
+    className: "bg-primary/5 text-primary border-primary/20",
     icon: <Clock className="w-3 h-3" />,
   },
   [CaseStatus.inProgress]: {
     label: "In Progress",
-    style: {
-      backgroundColor: "#dbeafe",
-      color: "#1e40af",
-      borderColor: "#93c5fd",
-    },
+    className: "bg-primary/10 text-primary border-primary/30",
     icon: <Briefcase className="w-3 h-3" />,
   },
   [CaseStatus.completed]: {
     label: "Completed",
-    style: {
-      backgroundColor: "#dcfce7",
-      color: "#166534",
-      borderColor: "#86efac",
-    },
+    className: "bg-accent/10 text-accent border-accent/30",
     icon: <CheckCircle2 className="w-3 h-3" />,
   },
 };
 
 const SUPPLY_STATUS_CONFIG: Record<
   SupplyRequestStatus,
-  { label: string; style: React.CSSProperties }
+  { label: string; className: string }
 > = {
   [SupplyRequestStatus.pending]: {
     label: "Pending",
-    style: {
-      backgroundColor: "#fef9c3",
-      color: "#854d0e",
-      borderColor: "#fde047",
-    },
+    className: "bg-primary/5 text-primary border-primary/20",
   },
   [SupplyRequestStatus.processing]: {
     label: "Processing",
-    style: {
-      backgroundColor: "#dbeafe",
-      color: "#1e40af",
-      borderColor: "#93c5fd",
-    },
+    className: "bg-primary/10 text-primary border-primary/30",
   },
   [SupplyRequestStatus.delivered]: {
     label: "Delivered",
-    style: {
-      backgroundColor: "#dcfce7",
-      color: "#166534",
-      borderColor: "#86efac",
-    },
+    className: "bg-accent/10 text-accent border-accent/30",
   },
   [SupplyRequestStatus.cancelled]: {
     label: "Cancelled",
-    style: {
-      backgroundColor: "#fee2e2",
-      color: "#991b1b",
-      borderColor: "#fca5a5",
-    },
+    className: "bg-destructive/10 text-destructive border-destructive/20",
+  },
+};
+
+const ENROLLMENT_STATUS_CONFIG: Record<
+  EnrollmentStatus,
+  { label: string; labelHi: string; className: string }
+> = {
+  [EnrollmentStatus.enrolled]: {
+    label: "Enrolled",
+    labelHi: "नामांकित",
+    className: "bg-primary/10 text-primary border-primary/30",
+  },
+  [EnrollmentStatus.ongoing]: {
+    label: "Ongoing",
+    labelHi: "जारी है",
+    className: "bg-primary/5 text-primary border-primary/20",
+  },
+  [EnrollmentStatus.completed]: {
+    label: "Completed",
+    labelHi: "पूर्ण",
+    className: "bg-accent/10 text-accent border-accent/30",
   },
 };
 
@@ -176,7 +188,6 @@ function CaseCard({ c, index }: { c: Case; index: number }) {
       className="rounded-xl border border-border bg-card overflow-hidden shadow-subtle transition-smooth hover:shadow-elevated"
       data-ocid={`dashboard.case.item.${index + 1}`}
     >
-      {/* Header row */}
       <button
         type="button"
         className="w-full text-left p-4 flex items-start sm:items-center justify-between gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
@@ -193,11 +204,11 @@ function CaseCard({ c, index }: { c: Case; index: number }) {
               variant="outline"
               className="text-xs font-body px-2 py-0 border-border"
             >
-              {BUSINESS_LABEL[c.businessType] ?? c.businessType}
+              {BUSINESS_LABEL[c.businessType as unknown as Specialization] ??
+                c.businessType}
             </Badge>
             <Badge
-              className="text-xs font-body border flex items-center gap-1 px-2 py-0"
-              style={cfg.style}
+              className={`text-xs font-body border flex items-center gap-1 px-2 py-0 ${cfg.className}`}
             >
               {cfg.icon}
               {cfg.label}
@@ -219,7 +230,6 @@ function CaseCard({ c, index }: { c: Case; index: number }) {
         </div>
       </button>
 
-      {/* Expanded detail */}
       {expanded && (
         <div className="border-t border-border bg-muted/30 px-4 py-4 space-y-3">
           <div>
@@ -230,7 +240,6 @@ function CaseCard({ c, index }: { c: Case; index: number }) {
               {c.description}
             </p>
           </div>
-
           {c.photoUrl && (
             <div>
               <p className="text-xs font-body font-semibold text-muted-foreground uppercase tracking-wide mb-2">
@@ -238,12 +247,11 @@ function CaseCard({ c, index }: { c: Case; index: number }) {
               </p>
               <img
                 src={c.photoUrl}
-                alt="Submitted document for this case"
+                alt="Submitted document"
                 className="w-full max-w-xs h-40 object-cover rounded-lg border border-border"
               />
             </div>
           )}
-
           {c.assignedExpertId != null && (
             <div className="flex items-center gap-2">
               <User className="w-4 h-4 text-primary shrink-0" />
@@ -252,7 +260,6 @@ function CaseCard({ c, index }: { c: Case; index: number }) {
               </span>
             </div>
           )}
-
           {c.adminNotes && (
             <div>
               <p className="text-xs font-body font-semibold text-muted-foreground uppercase tracking-wide mb-1">
@@ -265,7 +272,6 @@ function CaseCard({ c, index }: { c: Case; index: number }) {
               </div>
             </div>
           )}
-
           {!c.adminNotes && !c.assignedExpertId && (
             <p className="text-sm text-muted-foreground font-body italic">
               Awaiting expert assignment and review.
@@ -279,13 +285,7 @@ function CaseCard({ c, index }: { c: Case; index: number }) {
 
 // ─── Supply request row ───────────────────────────────────────────────────────
 
-function SupplyRow({
-  sr,
-  index,
-}: {
-  sr: SupplyRequest;
-  index: number;
-}) {
+function SupplyRow({ sr, index }: { sr: SupplyRequest; index: number }) {
   const cfg = SUPPLY_STATUS_CONFIG[sr.status];
   return (
     <div
@@ -310,11 +310,62 @@ function SupplyRow({
         </div>
       </div>
       <Badge
-        className="text-xs font-body border shrink-0 px-2 py-0.5"
-        style={cfg.style}
+        className={`text-xs font-body border shrink-0 px-2 py-0.5 ${cfg.className}`}
       >
         {cfg.label}
       </Badge>
+    </div>
+  );
+}
+
+// ─── Training enrollment card ─────────────────────────────────────────────────
+
+function TrainingCard({
+  enrollment,
+  program,
+  index,
+}: {
+  enrollment: TrainingEnrollment;
+  program: TrainingProgram | null;
+  index: number;
+}) {
+  const { lang } = useLanguage();
+  const cfg = ENROLLMENT_STATUS_CONFIG[enrollment.status];
+
+  return (
+    <div
+      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-muted/30 border border-border hover:bg-muted/50 transition-smooth"
+      data-ocid={`dashboard.training.item.${index + 1}`}
+    >
+      <div className="min-w-0 space-y-1">
+        <div className="flex items-center gap-2">
+          <GraduationCap className="w-4 h-4 text-primary shrink-0" />
+          <span className="text-sm font-body font-medium text-foreground truncate">
+            {program?.title ?? `Program #${String(enrollment.programId)}`}
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-body">
+          {program?.sector && (
+            <Badge
+              variant="outline"
+              className="text-xs px-1.5 py-0 border-border font-body"
+            >
+              {BUSINESS_LABEL[program.sector as unknown as Specialization] ??
+                program.sector}
+            </Badge>
+          )}
+          {program?.duration && <span>{program.duration}</span>}
+          <span className="text-border">·</span>
+          <span>Enrolled {formatDate(enrollment.enrolledAt)}</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <Badge
+          className={`text-xs font-body border px-2 py-0.5 ${cfg.className}`}
+        >
+          {lang === "hi" ? cfg.labelHi : cfg.label}
+        </Badge>
+      </div>
     </div>
   );
 }
@@ -354,8 +405,10 @@ function CasesSkeleton() {
 function DashboardContent() {
   const navigate = useNavigate();
   const backend = useBackend();
+  const { t, lang } = useLanguage();
   const [activeFilter, setActiveFilter] = useState<FilterTab>("All");
   const [expandedSupply, setExpandedSupply] = useState(false);
+  const [premiumModalOpen, setPremiumModalOpen] = useState(false);
 
   const { data: profile, isLoading: profileLoading } =
     useQuery<UserProfile | null>({
@@ -381,6 +434,28 @@ function DashboardContent() {
     queryFn: () => backend.getMySupplyRequests(),
   });
 
+  const { data: enrollments = [], isLoading: enrollmentsLoading } = useQuery<
+    TrainingEnrollment[]
+  >({
+    queryKey: ["myTrainingEnrollments"],
+    queryFn: () => backend.getMyTrainingEnrollments(),
+  });
+
+  const { data: allPrograms = [] } = useQuery<TrainingProgram[]>({
+    queryKey: ["trainingPrograms"],
+    queryFn: () => backend.listTrainingPrograms(),
+  });
+
+  const { data: existingPremiumRequest } = useQuery<PremiumRequest | null>({
+    queryKey: ["myPremiumRequest"],
+    queryFn: () => backend.getMyPremiumRequest(),
+  });
+
+  // Build program lookup map
+  const programMap = new Map<string, TrainingProgram>(
+    allPrograms.map((p) => [String(p.id), p]),
+  );
+
   // Stats
   const total = cases.length;
   const pending = cases.filter((c) => c.status === CaseStatus.pending).length;
@@ -402,8 +477,8 @@ function DashboardContent() {
   });
 
   const greeting = profile?.name
-    ? `Welcome back, ${profile.name}!`
-    : "My Dashboard";
+    ? t(`Welcome back, ${profile.name}!`, `वापस आए, ${profile.name}!`)
+    : t("My Dashboard", "मेरा डैशबोर्ड");
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-8">
@@ -427,20 +502,43 @@ function DashboardContent() {
                     {profile.location}
                   </span>
                 ) : (
-                  "Track your cases and supply requests here"
+                  t(
+                    "Track your cases and supply requests here",
+                    "अपने केस और सप्लाई अनुरोध यहां देखें",
+                  )
                 )}
               </p>
             </>
           )}
         </div>
-        <Button
-          onClick={() => void navigate({ to: "/request" })}
-          className="gradient-primary text-white border-0 font-body font-semibold shadow-subtle hover:opacity-90 transition-smooth shrink-0"
-          data-ocid="dashboard.new_request_button"
-        >
-          <PlusCircle className="w-4 h-4 mr-2" />
-          New Request
-        </Button>
+
+        {/* Action buttons row */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {/* Premium button / badge */}
+          {existingPremiumRequest ? (
+            <PremiumBadge />
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPremiumModalOpen(true)}
+              className="font-body font-semibold text-xs border-primary/30 text-primary hover:bg-primary/5 transition-smooth"
+              data-ocid="dashboard.upgrade_premium_button"
+            >
+              <Crown className="w-3.5 h-3.5 mr-1.5" />
+              {t("Upgrade to Premium", "प्रीमियम अपग्रेड")}
+            </Button>
+          )}
+
+          <Button
+            onClick={() => void navigate({ to: "/request" })}
+            className="gradient-primary text-white border-0 font-body font-semibold shadow-subtle hover:opacity-90 transition-smooth"
+            data-ocid="dashboard.new_request_button"
+          >
+            <PlusCircle className="w-4 h-4 mr-2" />
+            {t("New Request", "नया अनुरोध")}
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -449,28 +547,28 @@ function DashboardContent() {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <StatCard
-            label="Total Cases"
+            label={t("Total Cases", "कुल केस")}
             value={total}
             icon={<FileText className="w-5 h-5 text-primary" />}
             bg="bg-primary/10"
             ocid="dashboard.stat_total_card"
           />
           <StatCard
-            label="Pending"
+            label={t("Pending", "लंबित")}
             value={pending}
-            icon={<Clock className="w-5 h-5" style={{ color: "#92400e" }} />}
+            icon={<Clock className="w-5 h-5 text-primary" />}
             bg="bg-primary/5"
             ocid="dashboard.stat_pending_card"
           />
           <StatCard
-            label="In Progress"
+            label={t("In Progress", "प्रगति में")}
             value={inProgress}
             icon={<Briefcase className="w-5 h-5 text-primary" />}
             bg="bg-primary/10"
             ocid="dashboard.stat_inprogress_card"
           />
           <StatCard
-            label="Completed"
+            label={t("Completed", "पूर्ण")}
             value={completed}
             icon={<CheckCircle2 className="w-5 h-5 text-accent" />}
             bg="bg-accent/10"
@@ -483,9 +581,8 @@ function DashboardContent() {
       <section data-ocid="dashboard.cases_section">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <h2 className="text-lg font-display font-bold text-foreground">
-            My Cases
+            {t("My Cases", "मेरे केस")}
           </h2>
-          {/* Filter tabs */}
           <div
             className="flex items-center gap-1 bg-muted/50 rounded-lg p-1 w-full sm:w-auto overflow-x-auto"
             data-ocid="dashboard.filter.tab"
@@ -518,7 +615,10 @@ function DashboardContent() {
           >
             <AlertCircle className="w-5 h-5 shrink-0" />
             <p className="text-sm font-body">
-              Failed to load cases. Please try again.
+              {t(
+                "Failed to load cases. Please try again.",
+                "केस लोड नहीं हो सके। पुनः प्रयास करें।",
+              )}
             </p>
           </div>
         ) : casesLoading ? (
@@ -533,13 +633,19 @@ function DashboardContent() {
             </div>
             <h3 className="text-base font-display font-semibold text-foreground mb-1">
               {activeFilter === "All"
-                ? "No cases yet"
-                : `No ${activeFilter === "InProgress" ? "In Progress" : activeFilter} cases`}
+                ? t("No cases yet", "अभी कोई केस नहीं")
+                : t("No cases in this filter", "इस फ़िल्टर में कोई केस नहीं")}
             </h3>
             <p className="text-sm text-muted-foreground font-body mb-5 max-w-xs">
               {activeFilter === "All"
-                ? "Submit your first service request and our experts will help you get started."
-                : "Try switching to a different filter to see your other cases."}
+                ? t(
+                    "Submit your first service request and our experts will help you get started.",
+                    "अपना पहला अनुरोध भेजें और हमारे विशेषज्ञ आपकी मदद करेंगे।",
+                  )
+                : t(
+                    "Try switching to a different filter.",
+                    "दूसरा फ़िल्टर आज़माएं।",
+                  )}
             </p>
             {activeFilter === "All" && (
               <Button
@@ -549,7 +655,7 @@ function DashboardContent() {
                 data-ocid="dashboard.cases.submit_request_button"
               >
                 <PlusCircle className="w-4 h-4 mr-1.5" />
-                Submit a Request
+                {t("Submit a Request", "अनुरोध भेजें")}
               </Button>
             )}
           </div>
@@ -566,7 +672,7 @@ function DashboardContent() {
       <section data-ocid="dashboard.supply_section">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-display font-bold text-foreground">
-            Supply Requests
+            {t("Supply Requests", "आपूर्ति अनुरोध")}
           </h2>
           <Button
             variant="ghost"
@@ -575,7 +681,8 @@ function DashboardContent() {
             className="text-accent font-body text-xs"
             data-ocid="dashboard.supply.browse_resources_button"
           >
-            Browse Resources <ChevronRight className="w-3.5 h-3.5 ml-1" />
+            {t("Browse Resources", "संसाधन देखें")}{" "}
+            <ChevronRight className="w-3.5 h-3.5 ml-1" />
           </Button>
         </div>
 
@@ -585,7 +692,12 @@ function DashboardContent() {
             data-ocid="dashboard.supply.error_state"
           >
             <AlertCircle className="w-5 h-5 shrink-0" />
-            <p className="text-sm font-body">Failed to load supply requests.</p>
+            <p className="text-sm font-body">
+              {t(
+                "Failed to load supply requests.",
+                "आपूर्ति अनुरोध लोड नहीं हो सके।",
+              )}
+            </p>
           </div>
         ) : supplyLoading ? (
           <div className="space-y-3">
@@ -602,11 +714,13 @@ function DashboardContent() {
               <Package className="w-7 h-7 text-accent" />
             </div>
             <h3 className="text-sm font-display font-semibold text-foreground mb-1">
-              No supply requests
+              {t("No supply requests", "कोई आपूर्ति अनुरोध नहीं")}
             </h3>
             <p className="text-xs text-muted-foreground font-body mb-4 max-w-xs">
-              Browse our resource catalog to request seeds, livestock, feed, and
-              more.
+              {t(
+                "Browse our resource catalog to request seeds, livestock, feed, and more.",
+                "बीज, पशु, चारा और अधिक के लिए संसाधन देखें।",
+              )}
             </p>
             <Button
               size="sm"
@@ -615,7 +729,7 @@ function DashboardContent() {
               onClick={() => void navigate({ to: "/resources" })}
               data-ocid="dashboard.supply.browse_button"
             >
-              Browse Resources
+              {t("Browse Resources", "संसाधन देखें")}
             </Button>
           </div>
         ) : (
@@ -638,10 +752,90 @@ function DashboardContent() {
                   data-ocid="dashboard.supply.toggle_expand_button"
                 >
                   {expandedSupply
-                    ? "Show less"
-                    : `Show ${supplyRequests.length - 3} more`}
+                    ? t("Show less", "कम दिखाएं")
+                    : lang === "hi"
+                      ? `${supplyRequests.length - 3} और दिखाएं`
+                      : `Show ${supplyRequests.length - 3} more`}
                 </button>
               )}
+            </CardContent>
+          </Card>
+        )}
+      </section>
+
+      {/* My Trainings section */}
+      <section data-ocid="dashboard.trainings_section">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-display font-bold text-foreground">
+              {t("My Trainings", "मेरे प्रशिक्षण")}
+            </h2>
+            <p className="text-xs text-muted-foreground font-body mt-0.5">
+              {t(
+                "Track your enrolled training programs",
+                "नामांकित प्रशिक्षण कार्यक्रम देखें",
+              )}
+            </p>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => void navigate({ to: "/trainings" })}
+            className="text-accent font-body text-xs"
+            data-ocid="dashboard.trainings.browse_button"
+          >
+            {t("Browse Programs", "कार्यक्रम देखें")}{" "}
+            <ChevronRight className="w-3.5 h-3.5 ml-1" />
+          </Button>
+        </div>
+
+        {enrollmentsLoading ? (
+          <div className="space-y-3">
+            {[0, 1].map((i) => (
+              <Skeleton key={i} className="h-16 rounded-xl" />
+            ))}
+          </div>
+        ) : enrollments.length === 0 ? (
+          <div
+            className="flex flex-col items-center justify-center py-10 px-6 rounded-2xl border-2 border-dashed border-border bg-muted/20 text-center"
+            data-ocid="dashboard.trainings.empty_state"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+              <GraduationCap className="w-7 h-7 text-primary" />
+            </div>
+            <h3 className="text-sm font-display font-semibold text-foreground mb-1">
+              {t("No trainings enrolled", "कोई प्रशिक्षण नामांकित नहीं")}
+            </h3>
+            <p className="text-xs text-muted-foreground font-body mb-4 max-w-xs">
+              {t(
+                "Explore training programs in farming, fishery, poultry, and goat rearing.",
+                "खेती, मछली पालन, पोल्ट्री और बकरी पालन में प्रशिक्षण देखें।",
+              )}
+            </p>
+            <Button
+              size="sm"
+              className="gradient-primary text-white border-0 font-body font-semibold"
+              onClick={() => void navigate({ to: "/trainings" })}
+              data-ocid="dashboard.trainings.browse_programs_button"
+            >
+              <BookOpen className="w-4 h-4 mr-1.5" />
+              {t("Browse Training Programs", "प्रशिक्षण देखें")}
+            </Button>
+          </div>
+        ) : (
+          <Card
+            className="border-border shadow-subtle"
+            data-ocid="dashboard.trainings_card"
+          >
+            <CardContent className="p-4 space-y-3">
+              {enrollments.map((e, i) => (
+                <TrainingCard
+                  key={String(e.id)}
+                  enrollment={e}
+                  program={programMap.get(String(e.programId)) ?? null}
+                  index={i}
+                />
+              ))}
             </CardContent>
           </Card>
         )}
@@ -655,11 +849,13 @@ function DashboardContent() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-body font-semibold text-foreground">
-              Complete your profile
+              {t("Complete your profile", "अपनी प्रोफाइल पूरी करें")}
             </p>
             <p className="text-xs text-muted-foreground font-body">
-              Add your name, mobile, and location to get personalized expert
-              support.
+              {t(
+                "Add your name, mobile, and location to get personalized expert support.",
+                "व्यक्तिगत विशेषज्ञ सहायता के लिए नाम, मोबाइल और स्थान जोड़ें।",
+              )}
             </p>
           </div>
           <Button
@@ -669,10 +865,16 @@ function DashboardContent() {
             onClick={() => void navigate({ to: "/profile" })}
             data-ocid="dashboard.complete_profile_button"
           >
-            Update Profile
+            {t("Update Profile", "प्रोफाइल अपडेट करें")}
           </Button>
         </div>
       )}
+
+      {/* Premium Modal */}
+      <PremiumUpgradeModal
+        open={premiumModalOpen}
+        onClose={() => setPremiumModalOpen(false)}
+      />
     </div>
   );
 }

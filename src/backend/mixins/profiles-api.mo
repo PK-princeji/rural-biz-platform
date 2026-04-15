@@ -29,6 +29,7 @@ mixin (
       location = input.location;
       businessType = input.businessType;
       createdAt = switch (existing) { case (?p) p.createdAt; case null now };
+      aiRecommendation = input.aiRecommendation;
     };
     userProfiles.add(caller, profile);
   };

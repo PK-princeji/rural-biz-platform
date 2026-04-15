@@ -1,26 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, Sprout, X } from "lucide-react";
+import { Languages, Menu, Sprout, X } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../hooks/useLanguage";
 
-const NAV_LINKS = [
-  { label: "How It Works", href: "/" },
-  { label: "Sectors", href: "/#sectors" },
-  { label: "Resources", href: "/resources" },
-  { label: "Contact", href: "/contact" },
-];
-
-const AUTH_NAV = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "My Requests", href: "/request" },
-];
+// ─── Nav data (uses bilingual labels via t()) ─────────────────────────────────
 
 function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isAuthenticated, login, logout, isLoading } = useAuth();
   const router = useRouterState();
   const currentPath = router.location.pathname;
+  const { t, lang, toggle } = useLanguage();
+
+  const NAV_LINKS = [
+    { labelEn: "How It Works", labelHi: "कैसे काम करता है", href: "/" },
+    { labelEn: "Sectors", labelHi: "क्षेत्र", href: "/#sectors" },
+    { labelEn: "Resources", labelHi: "संसाधन", href: "/resources" },
+    { labelEn: "Trainings", labelHi: "प्रशिक्षण", href: "/trainings" },
+    { labelEn: "AI Quiz", labelHi: "AI क्विज़", href: "/ai-suggest" },
+    { labelEn: "Contact", labelHi: "संपर्क", href: "/contact" },
+  ];
+
+  const AUTH_NAV = [
+    { labelEn: "Dashboard", labelHi: "डैशबोर्ड", href: "/dashboard" },
+    { labelEn: "My Requests", labelHi: "मेरे अनुरोध", href: "/request" },
+  ];
 
   return (
     <header className="sticky top-0 z-50 bg-card border-b border-border shadow-subtle">
@@ -39,15 +45,15 @@ function Header() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-5">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 className="text-sm font-body font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-                data-ocid={`nav.${link.label.toLowerCase().replace(/\s+/g, "_")}_link`}
+                data-ocid={`nav.${link.labelEn.toLowerCase().replace(/\s+/g, "_")}_link`}
               >
-                {link.label}
+                {lang === "hi" ? link.labelHi : link.labelEn}
               </a>
             ))}
             {isAuthenticated &&
@@ -60,15 +66,29 @@ function Header() {
                       ? "text-accent"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
-                  data-ocid={`nav.${link.label.toLowerCase().replace(/\s+/g, "_")}_link`}
+                  data-ocid={`nav.${link.labelEn.toLowerCase().replace(/\s+/g, "_")}_link`}
                 >
-                  {link.label}
+                  {lang === "hi" ? link.labelHi : link.labelEn}
                 </Link>
               ))}
           </nav>
 
-          {/* Auth Button */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Desktop right: lang toggle + auth */}
+          <div className="hidden md:flex items-center gap-2">
+            {/* Language toggle */}
+            <button
+              type="button"
+              onClick={toggle}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-body font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth"
+              aria-label={
+                lang === "en" ? "Switch to Hindi" : "Switch to English"
+              }
+              data-ocid="nav.lang_toggle"
+            >
+              <Languages className="w-3.5 h-3.5" />
+              <span>{lang === "en" ? "EN | हिं" : "हिं | EN"}</span>
+            </button>
+
             {isAuthenticated ? (
               <>
                 <Link to="/profile" data-ocid="nav.profile_link">
@@ -77,7 +97,7 @@ function Header() {
                     size="sm"
                     className="text-sm font-body"
                   >
-                    Profile
+                    {t("Profile", "प्रोफाइल")}
                   </Button>
                 </Link>
                 <Button
@@ -87,7 +107,7 @@ function Header() {
                   className="text-sm font-body border-primary/30 text-primary hover:bg-primary/5"
                   data-ocid="nav.logout_button"
                 >
-                  Logout
+                  {t("Logout", "लॉगआउट")}
                 </Button>
               </>
             ) : (
@@ -98,7 +118,9 @@ function Header() {
                 className="gradient-primary text-white border-0 font-body font-semibold shadow-subtle hover:opacity-90 transition-smooth"
                 data-ocid="nav.login_button"
               >
-                {isLoading ? "Connecting…" : "Login"}
+                {isLoading
+                  ? t("Connecting…", "जोड़ रहे हैं…")
+                  : t("Login", "लॉगिन")}
               </Button>
             )}
           </div>
@@ -130,9 +152,9 @@ function Header() {
                 href={link.href}
                 className="py-2.5 px-3 rounded-md text-sm font-body text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth"
                 onClick={() => setMobileOpen(false)}
-                data-ocid={`nav.mobile_${link.label.toLowerCase().replace(/\s+/g, "_")}_link`}
+                data-ocid={`nav.mobile_${link.labelEn.toLowerCase().replace(/\s+/g, "_")}_link`}
               >
-                {link.label}
+                {lang === "hi" ? link.labelHi : link.labelEn}
               </a>
             ))}
             {isAuthenticated &&
@@ -142,12 +164,26 @@ function Header() {
                   to={link.href}
                   className="py-2.5 px-3 rounded-md text-sm font-body text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth"
                   onClick={() => setMobileOpen(false)}
-                  data-ocid={`nav.mobile_${link.label.toLowerCase().replace(/\s+/g, "_")}_link`}
+                  data-ocid={`nav.mobile_${link.labelEn.toLowerCase().replace(/\s+/g, "_")}_link`}
                 >
-                  {link.label}
+                  {lang === "hi" ? link.labelHi : link.labelEn}
                 </Link>
               ))}
-            <div className="pt-3 border-t border-border mt-2">
+
+            <div className="pt-3 border-t border-border mt-2 space-y-2">
+              {/* Mobile language toggle */}
+              <button
+                type="button"
+                onClick={toggle}
+                className="flex items-center gap-2 w-full py-2.5 px-3 rounded-md text-sm font-body text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-smooth"
+                data-ocid="nav.mobile_lang_toggle"
+              >
+                <Languages className="w-4 h-4" />
+                <span>
+                  {lang === "en" ? "Switch to हिंदी" : "Switch to English"}
+                </span>
+              </button>
+
               {isAuthenticated ? (
                 <div className="flex flex-col gap-2">
                   <Link to="/profile" onClick={() => setMobileOpen(false)}>
@@ -156,7 +192,7 @@ function Header() {
                       className="w-full justify-start text-sm font-body"
                       data-ocid="nav.mobile_profile_button"
                     >
-                      Profile
+                      {t("Profile", "प्रोफाइल")}
                     </Button>
                   </Link>
                   <Button
@@ -168,7 +204,7 @@ function Header() {
                     className="w-full text-sm font-body border-primary/30 text-primary"
                     data-ocid="nav.mobile_logout_button"
                   >
-                    Logout
+                    {t("Logout", "लॉगआउट")}
                   </Button>
                 </div>
               ) : (
@@ -181,7 +217,12 @@ function Header() {
                   className="w-full gradient-primary text-white border-0 font-body font-semibold"
                   data-ocid="nav.mobile_login_button"
                 >
-                  {isLoading ? "Connecting…" : "Login with Internet Identity"}
+                  {isLoading
+                    ? t("Connecting…", "जोड़ रहे हैं…")
+                    : t(
+                        "Login with Internet Identity",
+                        "इंटरनेट आइडेंटिटी से लॉगिन",
+                      )}
                 </Button>
               )}
             </div>
@@ -194,6 +235,7 @@ function Header() {
 
 function Footer() {
   const year = new Date().getFullYear();
+  const { t } = useLanguage();
   const utmLink = `https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== "undefined" ? window.location.hostname : "")}`;
 
   return (
@@ -211,29 +253,36 @@ function Footer() {
               </span>
             </div>
             <p className="text-sm text-muted-foreground font-body leading-relaxed">
-              Empowering rural entrepreneurs with Skill + Support + System for
-              sustainable growth.
+              {t(
+                "Empowering rural entrepreneurs with Skill + Support + System for sustainable growth.",
+                "ग्रामीण उद्यमियों को Skill + Support + System के साथ सशक्त बनाना।",
+              )}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
             <h4 className="font-display font-semibold text-foreground mb-3 text-sm uppercase tracking-wide">
-              Quick Links
+              {t("Quick Links", "त्वरित लिंक")}
             </h4>
             <ul className="space-y-2">
               {[
-                { label: "Home", href: "/" },
-                { label: "Resources", href: "/resources" },
-                { label: "Contact", href: "/contact" },
-                { label: "Dashboard", href: "/dashboard" },
+                { labelEn: "Home", labelHi: "होम", href: "/" },
+                {
+                  labelEn: "Trainings",
+                  labelHi: "प्रशिक्षण",
+                  href: "/trainings",
+                },
+                { labelEn: "Resources", labelHi: "संसाधन", href: "/resources" },
+                { labelEn: "Contact", labelHi: "संपर्क", href: "/contact" },
+                { labelEn: "Dashboard", labelHi: "डैशबोर्ड", href: "/dashboard" },
               ].map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
                     className="text-sm text-muted-foreground hover:text-accent transition-colors duration-200 font-body"
                   >
-                    {link.label}
+                    {t(link.labelEn, link.labelHi)}
                   </a>
                 </li>
               ))}
@@ -243,13 +292,18 @@ function Footer() {
           {/* Sectors */}
           <div>
             <h4 className="font-display font-semibold text-foreground mb-3 text-sm uppercase tracking-wide">
-              Sectors
+              {t("Sectors", "क्षेत्र")}
             </h4>
             <ul className="space-y-2">
-              {["Farming", "Fishery", "Poultry", "Goat Farming"].map((s) => (
-                <li key={s}>
+              {[
+                { en: "Farming", hi: "खेती" },
+                { en: "Fishery", hi: "मछली पालन" },
+                { en: "Poultry", hi: "मुर्गी पालन" },
+                { en: "Goat Farming", hi: "बकरी पालन" },
+              ].map((s) => (
+                <li key={s.en}>
                   <span className="text-sm text-muted-foreground font-body">
-                    {s}
+                    {t(s.en, s.hi)}
                   </span>
                 </li>
               ))}

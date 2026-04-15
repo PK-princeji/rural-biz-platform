@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { LanguageProvider } from "./hooks/useLanguage";
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -19,7 +20,9 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <InternetIdentityProvider>
-      <App />
+      <LanguageProvider>
+        <App />
+      </LanguageProvider>
     </InternetIdentityProvider>
   </QueryClientProvider>,
 );

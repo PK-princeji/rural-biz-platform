@@ -3,6 +3,11 @@ import { HttpAgent } from "@icp-sdk/core/agent";
 import { useMemo } from "react";
 import { createActor } from "../backend";
 import { ExternalBlob } from "../backend";
+import { mockBackend } from "../mocks/backend";
+
+const USE_MOCK =
+  (import.meta as unknown as { env: Record<string, string> }).env
+    .VITE_USE_MOCK === "true";
 
 const CANISTER_ID =
   (import.meta as unknown as { env: Record<string, string> }).env
@@ -20,6 +25,10 @@ export function useBackend() {
   const { identity } = useInternetIdentity();
 
   const backend = useMemo(() => {
+    if (USE_MOCK) {
+      return mockBackend;
+    }
+
     const agent = HttpAgent.createSync({
       host: window.location.origin,
       ...(identity ? { identity } : {}),

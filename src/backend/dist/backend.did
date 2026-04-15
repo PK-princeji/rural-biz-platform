@@ -1,5 +1,6 @@
 type UserProfile = 
  record {
+   aiRecommendation: opt text;
    businessType: BusinessType;
    createdAt: Timestamp;
    id: UserId;
@@ -13,6 +14,26 @@ type UpdateCaseInput =
    adminNotes: opt text;
    assignedExpertId: opt ExpertId;
    status: opt CaseStatus;
+ };
+type TrainingProgram = 
+ record {
+   createdAt: Timestamp;
+   description: text;
+   duration: text;
+   id: TrainingId;
+   isActive: bool;
+   sector: BusinessType;
+   title: text;
+ };
+type TrainingId = nat;
+type TrainingEnrollment = 
+ record {
+   enrolledAt: Timestamp;
+   id: EnrollmentId;
+   programId: TrainingId;
+   status: EnrollmentStatus;
+   updatedAt: Timestamp;
+   userId: UserId;
  };
 type Timestamp = int;
 type SupplyRequestStatus = 
@@ -42,6 +63,7 @@ type Specialization =
  };
 type SaveProfileInput = 
  record {
+   aiRecommendation: opt text;
    businessType: BusinessType;
    location: text;
    mobile: text;
@@ -63,6 +85,26 @@ type Resource =
    isAvailable: bool;
    name: text;
  };
+type QuizAnswers = 
+ record {
+   budget: text;
+   experience: text;
+   interest: text;
+   landAvailable: text;
+   location: text;
+ };
+type PremiumRequestId = nat;
+type PremiumRequest = 
+ record {
+   createdAt: Timestamp;
+   email: text;
+   id: PremiumRequestId;
+   isContacted: bool;
+   mobile: text;
+   name: text;
+   reason: text;
+   userId: UserId;
+ };
 type ExpertId = nat;
 type Expert = 
  record {
@@ -73,6 +115,21 @@ type Expert =
    isActive: bool;
    name: text;
    specialization: Specialization;
+ };
+type EnrollmentStatus = 
+ variant {
+   completed;
+   enrolled;
+   ongoing;
+ };
+type EnrollmentId = nat;
+type EnrollTrainingInput = record {programId: TrainingId;};
+type CreateTrainingInput = 
+ record {
+   description: text;
+   duration: text;
+   sector: BusinessType;
+   title: text;
  };
 type CreateSupplyRequestInput = 
  record {
@@ -86,6 +143,13 @@ type CreateResourceInput =
    description: text;
    isAvailable: bool;
    name: text;
+ };
+type CreatePremiumRequestInput = 
+ record {
+   email: text;
+   mobile: text;
+   name: text;
+   reason: text;
  };
 type CreateExpertInput = 
  record {
@@ -126,31 +190,55 @@ type BusinessType =
    goatFarming;
    poultry;
  };
+type AIQuizResult = 
+ record {
+   businessType: BusinessType;
+   confidence: text;
+   createdAt: Timestamp;
+   reasons: vec text;
+ };
 service : {
   addExpert: (input: CreateExpertInput) -> (Expert);
   addResource: (input: CreateResourceInput) -> (Resource);
   /// Check if caller is an admin
   checkIsAdmin: () -> (bool) query;
+  createTrainingProgram: (input: CreateTrainingInput) -> (TrainingProgram);
+  enrollInTraining: (input: EnrollTrainingInput) -> (TrainingEnrollment);
   getCallerUserProfile: () -> (opt UserProfile) query;
   getCase: (id: CaseId) -> (opt Case) query;
   getExpert: (id: ExpertId) -> (opt Expert) query;
+  getMyAIQuizResult: () -> (opt AIQuizResult) query;
   getMyCases: () -> (vec Case) query;
+  getMyPremiumRequest: () -> (opt PremiumRequest) query;
   getMySupplyRequests: () -> (vec SupplyRequest) query;
+  getMyTrainingEnrollments: () -> (vec TrainingEnrollment) query;
+  getProgramEnrollments: (programId: TrainingId) ->
+   (vec TrainingEnrollment) query;
   getResource: (id: ResourceId) -> (opt Resource) query;
   getSupplyRequest: (id: SupplyRequestId) -> (opt SupplyRequest) query;
+  getTrainingProgram: (id: TrainingId) -> (opt TrainingProgram) query;
   getUserProfile: (user: UserId) -> (opt UserProfile) query;
   /// Grant admin role to a principal (only existing admins or first caller)
   grantAdmin: (user: principal) -> ();
   listAllCases: () -> (vec Case) query;
   listAllSupplyRequests: () -> (vec SupplyRequest) query;
   listExperts: () -> (vec Expert) query;
+  listPremiumRequests: () -> (vec PremiumRequest) query;
   listResources: () -> (vec Resource) query;
+  listTrainingPrograms: () -> (vec TrainingProgram) query;
   listUserProfiles: () -> (vec UserProfile) query;
+  markPremiumRequestContacted: (requestId: PremiumRequestId) -> ();
   saveCallerUserProfile: (input: SaveProfileInput) -> ();
   setExpertActive: (id: ExpertId, isActive: bool) -> (opt Expert);
+  submitAIQuiz: (answers: QuizAnswers) -> (AIQuizResult);
   submitCase: (input: CreateCaseInput) -> (Case);
+  submitPremiumRequest: (input: CreatePremiumRequestInput) ->
+   (PremiumRequest);
   submitSupplyRequest: (input: CreateSupplyRequestInput) -> (SupplyRequest);
+  toggleTrainingProgramActive: (id: TrainingId) -> ();
   updateCase: (id: CaseId, input: UpdateCaseInput) -> (opt Case);
   updateSupplyRequestStatus: (id: SupplyRequestId, status:
    SupplyRequestStatus) -> (opt SupplyRequest);
+  updateTrainingEnrollmentStatus: (enrollmentId: EnrollmentId, status:
+   EnrollmentStatus) -> ();
 }

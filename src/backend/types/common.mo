@@ -5,4 +5,7 @@ module {
   public type ExpertId = Nat;
   public type ResourceId = Nat;
   public type SupplyRequestId = Nat;
+  public type TrainingId = Nat;
+  public type EnrollmentId = Nat;
+  public type PremiumRequestId = Nat;
 };

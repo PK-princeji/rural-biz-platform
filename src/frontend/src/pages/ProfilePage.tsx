@@ -13,7 +13,7 @@ import {
 import { Briefcase, Copy, Loader2, MapPin, Phone, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { BusinessType as BackendBusinessType } from "../backend.d";
+import { Specialization as BackendBusinessType } from "../backend.d";
 import { Layout } from "../components/Layout";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { useAuth } from "../hooks/useAuth";

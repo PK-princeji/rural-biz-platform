@@ -10,6 +10,12 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface AIQuizResult {
+  'reasons' : Array<string>,
+  'createdAt' : Timestamp,
+  'businessType' : BusinessType,
+  'confidence' : string,
+}
 export type BusinessType = { 'fishery' : null } |
   { 'goatFarming' : null } |
   { 'poultry' : null } |
@@ -40,6 +46,12 @@ export interface CreateExpertInput {
   'name' : string,
   'specialization' : Specialization,
 }
+export interface CreatePremiumRequestInput {
+  'name' : string,
+  'email' : string,
+  'mobile' : string,
+  'reason' : string,
+}
 export interface CreateResourceInput {
   'name' : string,
   'isAvailable' : boolean,
@@ -51,6 +63,17 @@ export interface CreateSupplyRequestInput {
   'deliveryLocation' : string,
   'quantity' : bigint,
 }
+export interface CreateTrainingInput {
+  'title' : string,
+  'duration' : string,
+  'description' : string,
+  'sector' : BusinessType,
+}
+export interface EnrollTrainingInput { 'programId' : TrainingId }
+export type EnrollmentId = bigint;
+export type EnrollmentStatus = { 'enrolled' : null } |
+  { 'completed' : null } |
+  { 'ongoing' : null };
 export interface Expert {
   'id' : ExpertId,
   'contactInfo' : string,
@@ -61,6 +84,24 @@ export interface Expert {
   'specialization' : Specialization,
 }
 export type ExpertId = bigint;
+export interface PremiumRequest {
+  'id' : PremiumRequestId,
+  'userId' : UserId,
+  'name' : string,
+  'createdAt' : Timestamp,
+  'email' : string,
+  'isContacted' : boolean,
+  'mobile' : string,
+  'reason' : string,
+}
+export type PremiumRequestId = bigint;
+export interface QuizAnswers {
+  'interest' : string,
+  'experience' : string,
+  'budget' : string,
+  'location' : string,
+  'landAvailable' : string,
+}
 export interface Resource {
   'id' : ResourceId,
   'name' : string,
@@ -74,6 +115,7 @@ export type ResourceCategory = { 'poultry' : null } |
   { 'seeds' : null };
 export type ResourceId = bigint;
 export interface SaveProfileInput {
+  'aiRecommendation' : [] | [string],
   'name' : string,
   'businessType' : BusinessType,
   'mobile' : string,
@@ -98,6 +140,24 @@ export type SupplyRequestStatus = { 'cancelled' : null } |
   { 'delivered' : null } |
   { 'processing' : null };
 export type Timestamp = bigint;
+export interface TrainingEnrollment {
+  'id' : EnrollmentId,
+  'status' : EnrollmentStatus,
+  'userId' : UserId,
+  'updatedAt' : Timestamp,
+  'enrolledAt' : Timestamp,
+  'programId' : TrainingId,
+}
+export type TrainingId = bigint;
+export interface TrainingProgram {
+  'id' : TrainingId,
+  'title' : string,
+  'duration' : string,
+  'createdAt' : Timestamp,
+  'description' : string,
+  'sector' : BusinessType,
+  'isActive' : boolean,
+}
 export interface UpdateCaseInput {
   'status' : [] | [CaseStatus],
   'assignedExpertId' : [] | [ExpertId],
@@ -106,6 +166,7 @@ export interface UpdateCaseInput {
 export type UserId = Principal;
 export interface UserProfile {
   'id' : UserId,
+  'aiRecommendation' : [] | [string],
   'name' : string,
   'createdAt' : Timestamp,
   'businessType' : BusinessType,
@@ -119,13 +180,23 @@ export interface _SERVICE {
    * / Check if caller is an admin
    */
   'checkIsAdmin' : ActorMethod<[], boolean>,
+  'createTrainingProgram' : ActorMethod<[CreateTrainingInput], TrainingProgram>,
+  'enrollInTraining' : ActorMethod<[EnrollTrainingInput], TrainingEnrollment>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCase' : ActorMethod<[CaseId], [] | [Case]>,
   'getExpert' : ActorMethod<[ExpertId], [] | [Expert]>,
+  'getMyAIQuizResult' : ActorMethod<[], [] | [AIQuizResult]>,
   'getMyCases' : ActorMethod<[], Array<Case>>,
+  'getMyPremiumRequest' : ActorMethod<[], [] | [PremiumRequest]>,
   'getMySupplyRequests' : ActorMethod<[], Array<SupplyRequest>>,
+  'getMyTrainingEnrollments' : ActorMethod<[], Array<TrainingEnrollment>>,
+  'getProgramEnrollments' : ActorMethod<
+    [TrainingId],
+    Array<TrainingEnrollment>
+  >,
   'getResource' : ActorMethod<[ResourceId], [] | [Resource]>,
   'getSupplyRequest' : ActorMethod<[SupplyRequestId], [] | [SupplyRequest]>,
+  'getTrainingProgram' : ActorMethod<[TrainingId], [] | [TrainingProgram]>,
   'getUserProfile' : ActorMethod<[UserId], [] | [UserProfile]>,
   /**
    * / Grant admin role to a principal (only existing admins or first caller)
@@ -134,19 +205,32 @@ export interface _SERVICE {
   'listAllCases' : ActorMethod<[], Array<Case>>,
   'listAllSupplyRequests' : ActorMethod<[], Array<SupplyRequest>>,
   'listExperts' : ActorMethod<[], Array<Expert>>,
+  'listPremiumRequests' : ActorMethod<[], Array<PremiumRequest>>,
   'listResources' : ActorMethod<[], Array<Resource>>,
+  'listTrainingPrograms' : ActorMethod<[], Array<TrainingProgram>>,
   'listUserProfiles' : ActorMethod<[], Array<UserProfile>>,
+  'markPremiumRequestContacted' : ActorMethod<[PremiumRequestId], undefined>,
   'saveCallerUserProfile' : ActorMethod<[SaveProfileInput], undefined>,
   'setExpertActive' : ActorMethod<[ExpertId, boolean], [] | [Expert]>,
+  'submitAIQuiz' : ActorMethod<[QuizAnswers], AIQuizResult>,
   'submitCase' : ActorMethod<[CreateCaseInput], Case>,
+  'submitPremiumRequest' : ActorMethod<
+    [CreatePremiumRequestInput],
+    PremiumRequest
+  >,
   'submitSupplyRequest' : ActorMethod<
     [CreateSupplyRequestInput],
     SupplyRequest
   >,
+  'toggleTrainingProgramActive' : ActorMethod<[TrainingId], undefined>,
   'updateCase' : ActorMethod<[CaseId, UpdateCaseInput], [] | [Case]>,
   'updateSupplyRequestStatus' : ActorMethod<
     [SupplyRequestId, SupplyRequestStatus],
     [] | [SupplyRequest]
+  >,
+  'updateTrainingEnrollmentStatus' : ActorMethod<
+    [EnrollmentId, EnrollmentStatus],
+    undefined
   >,
 }
 export declare const idlService: IDL.ServiceClass;

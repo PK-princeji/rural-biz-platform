@@ -27,7 +27,7 @@ import {
   useState,
 } from "react";
 import { toast } from "sonner";
-import { BusinessType, ExternalBlob } from "../backend";
+import { Specialization as BusinessType, ExternalBlob } from "../backend";
 import { Layout } from "../components/Layout";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { useBackend } from "../hooks/useBackend";

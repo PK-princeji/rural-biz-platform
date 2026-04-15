@@ -9,6 +9,7 @@ module {
     location : Text;
     businessType : Cases.BusinessType;
     createdAt : Common.Timestamp;
+    aiRecommendation : ?Text;
   };
 
   public type SaveProfileInput = {
@@ -16,5 +17,6 @@ module {
     mobile : Text;
     location : Text;
     businessType : Cases.BusinessType;
+    aiRecommendation : ?Text;
   };
 };

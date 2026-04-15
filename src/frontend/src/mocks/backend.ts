@@ -1,4 +1,4 @@
-import type { backendInterface, BusinessType, CaseStatus, ResourceCategory, SupplyRequestStatus } from "../backend";
+import type { backendInterface, CaseStatus, ResourceCategory, Specialization as BusinessType, SupplyRequestStatus } from "../backend";
 import type { Principal } from "@icp-sdk/core/principal";
 
 const mockPrincipal = { toString: () => "aaaa-bbbb-cccc-dddd" } as Principal;
@@ -253,6 +253,153 @@ export const mockBackend: backendInterface = {
   ],
 
   saveCallerUserProfile: async () => undefined,
+
+  createTrainingProgram: async (input) => ({
+    id: BigInt(1),
+    title: input.title,
+    description: input.description,
+    duration: input.duration,
+    sector: input.sector,
+    isActive: true,
+    createdAt: BigInt(Date.now()),
+  }),
+
+  enrollInTraining: async (input) => ({
+    id: BigInt(1),
+    userId: mockPrincipal,
+    programId: input.programId,
+    status: "enrolled" as any,
+    enrolledAt: BigInt(Date.now()),
+    updatedAt: BigInt(Date.now()),
+  }),
+
+  getMyAIQuizResult: async () => ({
+    businessType: "goatFarming" as any,
+    confidence: "High",
+    reasons: [
+      "Your location in Rajasthan is ideal for goat farming",
+      "Low initial investment matches your budget",
+      "Goats are hardy and suited for semi-arid conditions",
+      "High market demand for goat meat in your region",
+    ],
+    createdAt: BigInt(Date.now()),
+  }),
+
+  getMyPremiumRequest: async () => null,
+
+  getMyTrainingEnrollments: async () => [
+    {
+      id: BigInt(1),
+      userId: mockPrincipal,
+      programId: BigInt(1),
+      status: "ongoing" as any,
+      enrolledAt: BigInt(Date.now() - 172800000),
+      updatedAt: BigInt(Date.now() - 86400000),
+    },
+    {
+      id: BigInt(2),
+      userId: mockPrincipal,
+      programId: BigInt(2),
+      status: "enrolled" as any,
+      enrolledAt: BigInt(Date.now() - 86400000),
+      updatedAt: BigInt(Date.now() - 86400000),
+    },
+    {
+      id: BigInt(3),
+      userId: mockPrincipal,
+      programId: BigInt(0),
+      status: "completed" as any,
+      enrolledAt: BigInt(Date.now() - 604800000),
+      updatedAt: BigInt(Date.now() - 259200000),
+    },
+  ],
+
+  getProgramEnrollments: async () => [],
+
+  getTrainingProgram: async () => null,
+
+  listPremiumRequests: async () => [],
+
+  listTrainingPrograms: async () => [
+    {
+      id: BigInt(0),
+      title: "Modern Farming Techniques",
+      description: "Learn advanced cultivation methods, soil health management, crop rotation, and use of modern tools for higher yield.",
+      duration: "30 days",
+      sector: "agriculture" as any,
+      isActive: true,
+      createdAt: BigInt(Date.now()),
+    },
+    {
+      id: BigInt(1),
+      title: "Modern Crop Disease Management",
+      description: "Learn to identify and manage common crop diseases using organic and chemical methods.",
+      duration: "3 Days",
+      sector: "agriculture" as any,
+      isActive: true,
+      createdAt: BigInt(Date.now()),
+    },
+    {
+      id: BigInt(2),
+      title: "Poultry Farm Setup & Management",
+      description: "Complete guide to starting a backyard poultry business from scratch.",
+      duration: "2 Days",
+      sector: "poultry" as any,
+      isActive: true,
+      createdAt: BigInt(Date.now()),
+    },
+    {
+      id: BigInt(3),
+      title: "Fish Culture & Pond Management",
+      description: "Understand pond preparation, fish stocking, water quality management, feeding, and disease control.",
+      duration: "21 days",
+      sector: "fishery" as any,
+      isActive: true,
+      createdAt: BigInt(Date.now()),
+    },
+    {
+      id: BigInt(4),
+      title: "Goat Breed Selection & Care",
+      description: "Learn to select the right goat breeds, daily care routines, vaccination, and basic veterinary practices.",
+      duration: "25 days",
+      sector: "goatFarming" as any,
+      isActive: true,
+      createdAt: BigInt(Date.now()),
+    },
+    {
+      id: BigInt(5),
+      title: "Aquaculture Business Setup",
+      description: "Step-by-step guidance to set up a commercial aquaculture unit — financing, licensing, species selection, and marketing.",
+      duration: "35 days",
+      sector: "fishery" as any,
+      isActive: true,
+      createdAt: BigInt(Date.now()),
+    },
+  ],
+
+  markPremiumRequestContacted: async () => undefined,
+
+  submitAIQuiz: async () => ({
+    businessType: "agriculture" as any,
+    confidence: "High",
+    reasons: ["Good water availability", "Existing farming experience"],
+    createdAt: BigInt(Date.now()),
+  }),
+
+  submitPremiumRequest: async (input) => ({
+    id: BigInt(1),
+    userId: mockPrincipal,
+    name: input.name,
+    email: input.email,
+    mobile: input.mobile,
+    reason: input.reason,
+    isContacted: false,
+    createdAt: BigInt(Date.now()),
+  }),
+
+  toggleTrainingProgramActive: async () => undefined,
+
+  updateTrainingEnrollmentStatus: async () => undefined,
 
   setExpertActive: async () => ({
     id: BigInt(1),

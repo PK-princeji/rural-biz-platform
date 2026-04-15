@@ -1,14 +1,23 @@
 import Map "mo:core/Map";
 import Principal "mo:core/Principal";
+import Time "mo:core/Time";
 import CaseTypes "types/cases";
 import ExpertTypes "types/experts";
 import ResourceTypes "types/resources";
 import ProfileTypes "types/profiles";
+import TrainingTypes "types/trainings";
+import PremiumTypes "types/premium";
+import AITypes "types/ai";
 import CasesApi "mixins/cases-api";
 import ExpertsApi "mixins/experts-api";
 import ResourcesApi "mixins/resources-api";
 import ProfilesApi "mixins/profiles-api";
+import TrainingsApi "mixins/trainings-api";
+import PremiumApi "mixins/premium-api";
+import AIApi "mixins/ai-api";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   // Simple admin set — first caller to grantAdmin becomes admin
   let admins = Map.empty<Principal, Bool>();
@@ -33,6 +42,22 @@ actor {
   let supplyRequests = Map.empty<Nat, ResourceTypes.SupplyRequest>();
   let nextSupplyRequestId = { var value : Nat = 0 };
   include ResourcesApi(admins, resources, nextResourceId, supplyRequests, nextSupplyRequestId);
+
+  // Training programs & enrollments
+  let trainingPrograms = Map.empty<Nat, TrainingTypes.TrainingProgram>();
+  let nextTrainingId = { var value : Nat = 0 };
+  let trainingEnrollments = Map.empty<Nat, TrainingTypes.TrainingEnrollment>();
+  let nextEnrollmentId = { var value : Nat = 0 };
+  include TrainingsApi(admins, trainingPrograms, nextTrainingId, trainingEnrollments, nextEnrollmentId);
+
+  // Premium support requests
+  let premiumRequests = Map.empty<Nat, PremiumTypes.PremiumRequest>();
+  let nextPremiumId = { var value : Nat = 0 };
+  include PremiumApi(admins, premiumRequests, nextPremiumId);
+
+  // AI quiz results
+  let aiResults = Map.empty<Principal, AITypes.AIQuizResult>();
+  include AIApi(aiResults);
 
   // Seed sample resources (3+ per category)
   do {
@@ -66,6 +91,75 @@ actor {
       id += 1;
     };
     nextResourceId.value := id;
+  };
+
+  // Seed 8 training programs (2 per sector)
+  do {
+    let now = Time.now();
+    let seedPrograms : [(Text, Text, Text, CaseTypes.BusinessType)] = [
+      (
+        "Modern Farming Techniques",
+        "Learn advanced cultivation methods, soil health management, crop rotation, and use of modern tools for higher yield.",
+        "30 days",
+        #agriculture,
+      ),
+      (
+        "Organic Crop Management",
+        "Master organic farming practices, natural pest control, composting, and eco-friendly inputs for sustainable income.",
+        "45 days",
+        #agriculture,
+      ),
+      (
+        "Fish Culture & Pond Management",
+        "Understand pond preparation, fish stocking, water quality management, feeding, and disease control for profitable fishery.",
+        "21 days",
+        #fishery,
+      ),
+      (
+        "Aquaculture Business Setup",
+        "Step-by-step guidance to set up a commercial aquaculture unit — financing, licensing, species selection, and marketing.",
+        "35 days",
+        #fishery,
+      ),
+      (
+        "Commercial Poultry Farming",
+        "Complete training on broiler and layer management, housing design, nutrition, health care, and market linkage.",
+        "28 days",
+        #poultry,
+      ),
+      (
+        "Layer & Broiler Management",
+        "In-depth techniques for egg production (layer) and meat production (broiler) with focus on cost reduction and profitability.",
+        "42 days",
+        #poultry,
+      ),
+      (
+        "Goat Breed Selection & Care",
+        "Learn to select the right goat breeds for your region, daily care routines, vaccination, and basic veterinary practices.",
+        "25 days",
+        #goatFarming,
+      ),
+      (
+        "Goat Business Profitability",
+        "Financial planning, market access, record keeping, and scaling strategies for a successful goat farming business.",
+        "30 days",
+        #goatFarming,
+      ),
+    ];
+    var pid = 0;
+    for ((title, description, duration, sector) in seedPrograms.vals()) {
+      trainingPrograms.add(pid, {
+        id = pid;
+        title;
+        description;
+        duration;
+        sector;
+        isActive = true;
+        createdAt = now;
+      });
+      pid += 1;
+    };
+    nextTrainingId.value := pid;
   };
 
   /// Grant admin role to a principal (only existing admins or first caller)

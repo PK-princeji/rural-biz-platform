@@ -27,7 +27,11 @@ import {
 import type React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { BusinessType, CaseStatus, type Expert } from "../backend.d";
+import {
+  Specialization as BusinessType,
+  CaseStatus,
+  type Expert,
+} from "../backend.d";
 import type { Case } from "../backend.d";
 import { Layout } from "../components/Layout";
 import { useAuth } from "../hooks/useAuth";

@@ -120,6 +120,29 @@ export interface UserProfileInput {
   businessType?: BusinessType;
 }
 
+// ─── Training Types ───────────────────────────────────────────────────────────
+
+export type EnrollmentStatus = "enrolled" | "ongoing" | "completed";
+
+export interface TrainingProgram {
+  id: bigint;
+  title: string;
+  description: string;
+  duration: string;
+  sector: BusinessType;
+  isActive: boolean;
+  createdAt: bigint;
+}
+
+export interface TrainingEnrollment {
+  id: bigint;
+  userId: string;
+  programId: bigint;
+  status: EnrollmentStatus;
+  enrolledAt: bigint;
+  updatedAt: bigint;
+}
+
 // ─── UI Helper Types ─────────────────────────────────────────────────────────
 
 export interface NavItem {

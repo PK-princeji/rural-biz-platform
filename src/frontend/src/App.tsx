@@ -17,6 +17,8 @@ const ResourcesPage = lazy(() => import("./pages/ResourcesPage"));
 const AdminPage = lazy(() => import("./pages/AdminPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const TrainingsPage = lazy(() => import("./pages/TrainingsPage"));
+const AISuggestPage = lazy(() => import("./pages/AISuggestPage"));
 
 // Fallback loader
 function PageLoader() {
@@ -93,6 +95,18 @@ const profileRoute = createRoute({
   component: ProfilePage,
 });
 
+const trainingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/trainings",
+  component: TrainingsPage,
+});
+
+const aiSuggestRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/ai-suggest",
+  component: AISuggestPage,
+});
+
 // Route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -103,6 +117,8 @@ const routeTree = rootRoute.addChildren([
   adminRoute,
   contactRoute,
   profileRoute,
+  trainingsRoute,
+  aiSuggestRoute,
 ]);
 
 // Router
