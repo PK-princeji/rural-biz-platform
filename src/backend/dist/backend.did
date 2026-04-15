@@ -1,0 +1,156 @@
+type UserProfile = 
+ record {
+   businessType: BusinessType;
+   createdAt: Timestamp;
+   id: UserId;
+   location: text;
+   mobile: text;
+   name: text;
+ };
+type UserId = principal;
+type UpdateCaseInput = 
+ record {
+   adminNotes: opt text;
+   assignedExpertId: opt ExpertId;
+   status: opt CaseStatus;
+ };
+type Timestamp = int;
+type SupplyRequestStatus = 
+ variant {
+   cancelled;
+   delivered;
+   pending;
+   processing;
+ };
+type SupplyRequestId = nat;
+type SupplyRequest = 
+ record {
+   createdAt: Timestamp;
+   deliveryLocation: text;
+   id: SupplyRequestId;
+   quantity: nat;
+   resourceId: ResourceId;
+   status: SupplyRequestStatus;
+   userId: UserId;
+ };
+type Specialization = 
+ variant {
+   agriculture;
+   fishery;
+   goatFarming;
+   poultry;
+ };
+type SaveProfileInput = 
+ record {
+   businessType: BusinessType;
+   location: text;
+   mobile: text;
+   name: text;
+ };
+type ResourceId = nat;
+type ResourceCategory = 
+ variant {
+   fish;
+   goat;
+   poultry;
+   seeds;
+ };
+type Resource = 
+ record {
+   category: ResourceCategory;
+   description: text;
+   id: ResourceId;
+   isAvailable: bool;
+   name: text;
+ };
+type ExpertId = nat;
+type Expert = 
+ record {
+   assignedCasesCount: nat;
+   contactInfo: text;
+   createdAt: Timestamp;
+   id: ExpertId;
+   isActive: bool;
+   name: text;
+   specialization: Specialization;
+ };
+type CreateSupplyRequestInput = 
+ record {
+   deliveryLocation: text;
+   quantity: nat;
+   resourceId: ResourceId;
+ };
+type CreateResourceInput = 
+ record {
+   category: ResourceCategory;
+   description: text;
+   isAvailable: bool;
+   name: text;
+ };
+type CreateExpertInput = 
+ record {
+   contactInfo: text;
+   name: text;
+   specialization: Specialization;
+ };
+type CreateCaseInput = 
+ record {
+   businessType: BusinessType;
+   description: text;
+   photoUrl: opt text;
+ };
+type CaseStatus = 
+ variant {
+   completed;
+   inProgress;
+   pending;
+ };
+type CaseId = nat;
+type Case = 
+ record {
+   adminNotes: opt text;
+   assignedExpertId: opt ExpertId;
+   businessType: BusinessType;
+   createdAt: Timestamp;
+   description: text;
+   id: CaseId;
+   photoUrl: opt text;
+   status: CaseStatus;
+   updatedAt: Timestamp;
+   userId: UserId;
+ };
+type BusinessType = 
+ variant {
+   agriculture;
+   fishery;
+   goatFarming;
+   poultry;
+ };
+service : {
+  addExpert: (input: CreateExpertInput) -> (Expert);
+  addResource: (input: CreateResourceInput) -> (Resource);
+  /// Check if caller is an admin
+  checkIsAdmin: () -> (bool) query;
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCase: (id: CaseId) -> (opt Case) query;
+  getExpert: (id: ExpertId) -> (opt Expert) query;
+  getMyCases: () -> (vec Case) query;
+  getMySupplyRequests: () -> (vec SupplyRequest) query;
+  getResource: (id: ResourceId) -> (opt Resource) query;
+  getSupplyRequest: (id: SupplyRequestId) -> (opt SupplyRequest) query;
+  getUserProfile: (user: UserId) -> (opt UserProfile) query;
+  /// Grant admin role to a principal (only existing admins or first caller)
+  grantAdmin: (user: principal) -> ();
+  listAllCases: () -> (vec Case) query;
+  listAllSupplyRequests: () -> (vec SupplyRequest) query;
+  listExperts: () -> (vec Expert) query;
+  listResources: () -> (vec Resource) query;
+  listUserProfiles: () -> (vec UserProfile) query;
+  saveCallerUserProfile: (input: SaveProfileInput) -> ();
+  setExpertActive: (id: ExpertId, isActive: bool) -> (opt Expert);
+  submitCase: (input: CreateCaseInput) -> (Case);
+  submitSupplyRequest: (input: CreateSupplyRequestInput) -> (SupplyRequest);
+  updateCase: (id: CaseId, input: UpdateCaseInput) -> (opt Case);
+  updateSupplyRequestStatus: (id: SupplyRequestId, status:
+   SupplyRequestStatus) -> (opt SupplyRequest);
+}

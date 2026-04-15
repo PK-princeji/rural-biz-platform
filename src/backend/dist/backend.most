@@ -1,0 +1,107 @@
+// Version: 1.0.0
+type BusinessType__688280956 =
+  {#agriculture; #fishery; #goatFarming; #poultry};
+type CaseId__475917969 = Nat;
+type CaseStatus__809767907 = {#completed; #inProgress; #pending};
+type Case__874865401 =
+  {
+    adminNotes : ?Text;
+    assignedExpertId : ?ExpertId__206089898;
+    businessType : BusinessType__688280956;
+    createdAt : Timestamp__301639476;
+    description : Text;
+    id : CaseId__475917969;
+    photoUrl : ?Text;
+    status : CaseStatus__809767907;
+    updatedAt : Timestamp__301639476;
+    userId : UserId__158757552
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type ExpertId__206089898 = Nat;
+type Expert__837171470 =
+  {
+    assignedCasesCount : Nat;
+    contactInfo : Text;
+    createdAt : Timestamp__301639476;
+    id : ExpertId__206089898;
+    isActive : Bool;
+    name : Text;
+    specialization : Specialization__499076114
+  };
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type ResourceCategory__581123986 = {#fish; #goat; #poultry; #seeds};
+type ResourceId__712276042 = Nat;
+type Resource__736884683 =
+  {
+    category : ResourceCategory__581123986;
+    description : Text;
+    id : ResourceId__712276042;
+    isAvailable : Bool;
+    name : Text
+  };
+type Specialization__499076114 =
+  {#agriculture; #fishery; #goatFarming; #poultry};
+type SupplyRequestId__160128596 = Nat;
+type SupplyRequestStatus__866650549 =
+  {#cancelled; #delivered; #pending; #processing};
+type SupplyRequest__474097380 =
+  {
+    createdAt : Timestamp__301639476;
+    deliveryLocation : Text;
+    id : SupplyRequestId__160128596;
+    quantity : Nat;
+    resourceId : ResourceId__712276042;
+    status : SupplyRequestStatus__866650549;
+    userId : UserId__158757552
+  };
+type Timestamp__301639476 = Int;
+type UserId__158757552 = Principal;
+type UserProfile__190304746 =
+  {
+    businessType : BusinessType__688280956;
+    createdAt : Timestamp__301639476;
+    id : UserId__158757552;
+    location : Text;
+    mobile : Text;
+    name : Text
+  };
+actor {
+  stable admins :
+    {var root : Node__46230540<Principal, Bool>; var size : Nat__490723111};
+  stable cases :
+    {
+      var root : Node__46230540<Nat, Case__874865401>;
+      var size : Nat__490723111
+    };
+  stable experts :
+    {
+      var root : Node__46230540<Nat, Expert__837171470>;
+      var size : Nat__490723111
+    };
+  stable nextCaseId : {var value : Nat};
+  stable nextExpertId : {var value : Nat};
+  stable nextResourceId : {var value : Nat};
+  stable nextSupplyRequestId : {var value : Nat};
+  stable resources :
+    {
+      var root : Node__46230540<Nat, Resource__736884683>;
+      var size : Nat__490723111
+    };
+  stable supplyRequests :
+    {
+      var root : Node__46230540<Nat, SupplyRequest__474097380>;
+      var size : Nat__490723111
+    };
+  stable userProfiles :
+    {
+      var root : Node__46230540<Principal, UserProfile__190304746>;
+      var size : Nat__490723111
+    }
+};

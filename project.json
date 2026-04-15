@@ -1,0 +1,24 @@
+{
+  "overview": "Rural Biz Platform is a comprehensive rural entrepreneurship system connecting farmers, youth, women, and small business starters in agriculture, fishery, poultry, and goat farming with experts for guidance, case management, and resource supply.",
+  "features": [
+    "Hero homepage with 'Skill + Support + System' tagline and sector icons",
+    "Internet Identity login with user profile (name, mobile, location)",
+    "Service request form with photo upload and unique Case ID",
+    "Personal dashboard to track case status, assigned expert, and next steps",
+    "Admin panel for case management, expert assignment, and status updates",
+    "Expert management with profiles, assignment, and activity tracking",
+    "Resource catalog (goat breeds, fish seeds, poultry, seeds & feed) with supply requests",
+    "Contact & Support page with call button, WhatsApp link, and FAQ"
+  ],
+  "category": "productivity",
+  "tags": [
+    "rural",
+    "entrepreneurship",
+    "agriculture",
+    "farming",
+    "case-management",
+    "expert-platform",
+    "mobile-first"
+  ],
+  "last_updated": "2026-04-15T19:05:08.450Z"
+}
