@@ -6,6 +6,7 @@ module {
     id : Common.UserId;
     name : Text;
     mobile : Text;
+    whatsapp : Text;
     location : Text;
     businessType : Cases.BusinessType;
     createdAt : Common.Timestamp;
@@ -15,6 +16,7 @@ module {
   public type SaveProfileInput = {
     name : Text;
     mobile : Text;
+    whatsapp : Text;
     location : Text;
     businessType : Cases.BusinessType;
     aiRecommendation : ?Text;

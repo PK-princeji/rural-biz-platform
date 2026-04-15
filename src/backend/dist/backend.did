@@ -7,6 +7,7 @@ type UserProfile =
    location: text;
    mobile: text;
    name: text;
+   whatsapp: text;
  };
 type UserId = principal;
 type UpdateCaseInput = 
@@ -68,6 +69,7 @@ type SaveProfileInput =
    location: text;
    mobile: text;
    name: text;
+   whatsapp: text;
  };
 type ResourceId = nat;
 type ResourceCategory = 
@@ -157,11 +159,34 @@ type CreateExpertInput =
    name: text;
    specialization: Specialization;
  };
+type CreateContactLeadInput = 
+ record {
+   email: text;
+   location: text;
+   name: text;
+   phone: text;
+   problem: text;
+   whatsapp: text;
+ };
 type CreateCaseInput = 
  record {
    businessType: BusinessType;
    description: text;
    photoUrl: opt text;
+ };
+type ContactLeadId = nat;
+type ContactLead = 
+ record {
+   email: text;
+   id: ContactLeadId;
+   location: text;
+   name: text;
+   phone: text;
+   problem: text;
+   status: text;
+   submittedAt: Timestamp;
+   userId: opt UserId;
+   whatsapp: text;
  };
 type CaseStatus = 
  variant {
@@ -209,6 +234,7 @@ service : {
   getExpert: (id: ExpertId) -> (opt Expert) query;
   getMyAIQuizResult: () -> (opt AIQuizResult) query;
   getMyCases: () -> (vec Case) query;
+  getMyContactLeads: () -> (vec ContactLead) query;
   getMyPremiumRequest: () -> (opt PremiumRequest) query;
   getMySupplyRequests: () -> (vec SupplyRequest) query;
   getMyTrainingEnrollments: () -> (vec TrainingEnrollment) query;
@@ -221,6 +247,7 @@ service : {
   /// Grant admin role to a principal (only existing admins or first caller)
   grantAdmin: (user: principal) -> ();
   listAllCases: () -> (vec Case) query;
+  listAllContactLeads: () -> (vec ContactLead) query;
   listAllSupplyRequests: () -> (vec SupplyRequest) query;
   listExperts: () -> (vec Expert) query;
   listPremiumRequests: () -> (vec PremiumRequest) query;
@@ -232,6 +259,7 @@ service : {
   setExpertActive: (id: ExpertId, isActive: bool) -> (opt Expert);
   submitAIQuiz: (answers: QuizAnswers) -> (AIQuizResult);
   submitCase: (input: CreateCaseInput) -> (Case);
+  submitContactLead: (input: CreateContactLeadInput) -> (nat);
   submitPremiumRequest: (input: CreatePremiumRequestInput) ->
    (PremiumRequest);
   submitSupplyRequest: (input: CreateSupplyRequestInput) -> (SupplyRequest);

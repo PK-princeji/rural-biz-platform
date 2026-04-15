@@ -1,25 +1,24 @@
 {
-  "overview": "A complete rural entrepreneurship platform connecting farmers, youth, and women entrepreneurs in India with expert guidance, training programs, resources, and business support — all in one place.",
+  "overview": "Rural Entrepreneurship Platform — a full-stack web application helping rural users (farmers, youth, women entrepreneurs) start and run small businesses in agriculture, fishery, poultry, and goat farming. Connects users with expert guidance, field support, training, and resources.",
   "features": [
-    "Training programs with enrollment and dashboard tracking",
-    "AI-powered business type quiz with saved recommendations",
-    "Premium support upgrade with manual contact form",
-    "Hindi/English language toggle in header",
-    "Service request system with case tracking",
-    "Admin panel for managing cases, experts, and training programs",
-    "Resource catalog with supply request",
-    "Expert management and assignment"
+    "Homepage with lead capture and dual CTAs",
+    "Visual 6-step user journey flow",
+    "User dashboard with request tracking, AI results, and progress tracker",
+    "AI business suggestion quiz with saved results",
+    "Contact page with click-to-call and WhatsApp",
+    "Pricing section with consultation, setup, training, and premium tiers",
+    "About page with team section (5 members)",
+    "Admin panel for managing all leads and cases",
+    "Service request system with Case ID tracking",
+    "Mobile-responsive design with Green + Blue theme"
   ],
-  "category": "business",
+  "category": "productivity",
   "tags": [
-    "rural",
-    "entrepreneurship",
-    "agriculture",
-    "farming",
-    "india",
+    "rural-entrepreneurship",
+    "lead-generation",
     "business-support",
-    "training",
-    "expert-guidance"
+    "agriculture",
+    "india"
   ],
-  "last_updated": "2026-04-15T21:24:07.602Z"
+  "last_updated": "2026-04-15T22:17:47.185Z"
 }

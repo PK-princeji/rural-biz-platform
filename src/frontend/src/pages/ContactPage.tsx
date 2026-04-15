@@ -1,19 +1,36 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   CheckCircle,
   ChevronDown,
   Clock,
   Copy,
   Mail,
+  MapPin,
   MessageCircle,
   Phone,
+  Send,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import type { CreateContactLeadInput } from "../backend";
 import { Layout } from "../components/Layout";
+import { useBackend } from "../hooks/useBackend";
 
-// ─── FAQ Data ───────────────────────────────────────────────────────────────
+// ─── Constants ───────────────────────────────────────────────────────────────
+const EMAIL = "udyamsathisoppoter@gmail.com";
+const PHONE_DISPLAY = "+91 8579042891";
+const PHONE_TEL = "tel:+918579042891";
+const WA_NUMBER = "+91 8986378505";
+const WA_LINK =
+  "https://wa.me/918986378505?text=Hi%2C%20I%20need%20help%20with%20my%20rural%20business";
+const ADDRESS = "DRCC Road, Kathal Bari, Barari, Bhagalpur, Bihar – 812003";
+
+// ─── FAQ Data ────────────────────────────────────────────────────────────────
 const FAQS = [
   {
     q: "How do I submit a service request?",
@@ -41,7 +58,7 @@ const FAQS = [
   },
 ];
 
-// ─── FAQ Accordion Item ──────────────────────────────────────────────────────
+// ─── FAQ Accordion Item ───────────────────────────────────────────────────────
 function FaqItem({
   faq,
   index,
@@ -85,23 +102,302 @@ function FaqItem({
   );
 }
 
-// ─── Main Component ──────────────────────────────────────────────────────────
+// ─── Contact Form ─────────────────────────────────────────────────────────────
+function ContactForm() {
+  const backend = useBackend();
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    whatsapp: "",
+    location: "",
+    problem: "",
+    email: "",
+  });
+  const [errors, setErrors] = useState<{
+    name?: string;
+    phone?: string;
+    problem?: string;
+  }>({});
+
+  const validate = () => {
+    const errs: { name?: string; phone?: string; problem?: string } = {};
+    if (!form.name.trim()) errs.name = "Name is required / नाम आवश्यक है";
+    if (!form.phone.trim()) errs.phone = "Phone is required / फोन आवश्यक है";
+    if (!form.problem.trim())
+      errs.problem = "Please describe your problem / समस्या बताएं";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name as keyof typeof errors]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+    setLoading(true);
+    try {
+      const input: CreateContactLeadInput = {
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        whatsapp: form.whatsapp.trim(),
+        location: form.location.trim(),
+        problem: form.problem.trim(),
+        email: form.email.trim(),
+      };
+      await backend.submitContactLead(input);
+      setSubmitted(true);
+      toast.success("Message sent successfully!");
+    } catch {
+      toast.error("Failed to send message. Please try calling us directly.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div
+        className="flex flex-col items-center justify-center gap-4 py-10 px-6 text-center"
+        data-ocid="contact.form.success_state"
+      >
+        <div className="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center">
+          <CheckCircle className="w-9 h-9 text-accent" />
+        </div>
+        <h3 className="font-display font-bold text-xl text-foreground">
+          Message Sent! / संदेश भेजा गया!
+        </h3>
+        <p className="font-body text-muted-foreground text-sm leading-relaxed max-w-xs">
+          Thank you! We will contact you within 24 hours.
+          <br />
+          धन्यवाद! हम 24 घंटे के भीतर आपसे संपर्क करेंगे।
+        </p>
+        <Button
+          variant="outline"
+          className="mt-2"
+          onClick={() => {
+            setSubmitted(false);
+            setForm({
+              name: "",
+              phone: "",
+              whatsapp: "",
+              location: "",
+              problem: "",
+              email: "",
+            });
+          }}
+          data-ocid="contact.form.send_another_button"
+        >
+          Send Another / दूसरा भेजें
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 p-6"
+      data-ocid="contact.form"
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Name */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="contact-name"
+            className="font-body text-sm font-medium"
+          >
+            Name / नाम <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="contact-name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder="Your full name"
+            autoComplete="name"
+            data-ocid="contact.form.name_input"
+            className={
+              errors.name
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }
+          />
+          {errors.name && (
+            <p
+              className="text-xs text-destructive font-body"
+              data-ocid="contact.form.name.field_error"
+            >
+              {errors.name}
+            </p>
+          )}
+        </div>
+
+        {/* Phone */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="contact-phone"
+            className="font-body text-sm font-medium"
+          >
+            Phone / फोन <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="contact-phone"
+            name="phone"
+            type="tel"
+            value={form.phone}
+            onChange={handleChange}
+            placeholder="+91 XXXXXXXXXX"
+            autoComplete="tel"
+            data-ocid="contact.form.phone_input"
+            className={
+              errors.phone
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }
+          />
+          {errors.phone && (
+            <p
+              className="text-xs text-destructive font-body"
+              data-ocid="contact.form.phone.field_error"
+            >
+              {errors.phone}
+            </p>
+          )}
+        </div>
+
+        {/* WhatsApp */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="contact-whatsapp"
+            className="font-body text-sm font-medium"
+          >
+            WhatsApp (optional)
+          </Label>
+          <Input
+            id="contact-whatsapp"
+            name="whatsapp"
+            type="tel"
+            value={form.whatsapp}
+            onChange={handleChange}
+            placeholder="+91 XXXXXXXXXX"
+            data-ocid="contact.form.whatsapp_input"
+          />
+        </div>
+
+        {/* Location */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="contact-location"
+            className="font-body text-sm font-medium"
+          >
+            Location / स्थान
+          </Label>
+          <Input
+            id="contact-location"
+            name="location"
+            value={form.location}
+            onChange={handleChange}
+            placeholder="Village, District, State"
+            data-ocid="contact.form.location_input"
+          />
+        </div>
+      </div>
+
+      {/* Problem / Message */}
+      <div className="space-y-1.5">
+        <Label
+          htmlFor="contact-problem"
+          className="font-body text-sm font-medium"
+        >
+          Problem / Message <span className="text-destructive">*</span>
+        </Label>
+        <Textarea
+          id="contact-problem"
+          name="problem"
+          value={form.problem}
+          onChange={handleChange}
+          placeholder="Describe your business problem or what help you need… / अपनी व्यापार समस्या बताएं…"
+          rows={4}
+          data-ocid="contact.form.problem_textarea"
+          className={
+            errors.problem
+              ? "border-destructive focus-visible:ring-destructive"
+              : ""
+          }
+        />
+        {errors.problem && (
+          <p
+            className="text-xs text-destructive font-body"
+            data-ocid="contact.form.problem.field_error"
+          >
+            {errors.problem}
+          </p>
+        )}
+      </div>
+
+      {/* Email (optional) */}
+      <div className="space-y-1.5">
+        <Label
+          htmlFor="contact-email"
+          className="font-body text-sm font-medium"
+        >
+          Email (optional)
+        </Label>
+        <Input
+          id="contact-email"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="your@email.com"
+          autoComplete="email"
+          data-ocid="contact.form.email_input"
+        />
+      </div>
+
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full min-h-[48px] font-body font-bold text-sm gap-2"
+        data-ocid="contact.form.submit_button"
+      >
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <span className="w-4 h-4 border-2 border-primary-foreground/40 border-t-primary-foreground rounded-full animate-spin" />
+            Sending… / भेज रहे हैं…
+          </span>
+        ) : (
+          <>
+            <Send className="w-4 h-4" />
+            Send Message / संदेश भेजें
+          </>
+        )}
+      </Button>
+    </form>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 export default function ContactPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [emailCopied, setEmailCopied] = useState(false);
-
-  const EMAIL = "support@ruralbiz.in";
-  const PHONE = "+91-9876543210";
-  const PHONE_TEL = "tel:+919876543210";
-  const WA_LINK =
-    "https://wa.me/919876543210?text=Hi%2C%20I%20need%20help%20with%20my%20Rural%20Biz%20Platform%20account";
 
   const handleCopyEmail = () => {
     navigator.clipboard
       .writeText(EMAIL)
       .then(() => {
         setEmailCopied(true);
-        toast.success("Email address copied to clipboard!");
+        toast.success("Email address copied!");
         setTimeout(() => setEmailCopied(false), 2500);
       })
       .catch(() => {
@@ -123,7 +419,7 @@ export default function ContactPage() {
           <div className="inline-flex items-center gap-2 bg-white/15 rounded-full px-4 py-1.5 mb-4">
             <Phone className="w-4 h-4" />
             <span className="text-sm font-body font-medium">
-              Support Team Ready
+              Support Team Ready / सहायता टीम उपलब्ध
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-display font-bold mb-3 text-balance">
@@ -132,7 +428,7 @@ export default function ContactPage() {
           <p className="text-white/85 font-body text-base sm:text-lg leading-relaxed">
             We are here to help your rural business succeed.
             <br className="hidden sm:block" />
-            Call us, WhatsApp us, or check answers below.
+            Call us, WhatsApp us, or fill the form below.
           </p>
         </div>
       </section>
@@ -148,7 +444,7 @@ export default function ContactPage() {
             href={PHONE_TEL}
             className="flex items-center justify-between gap-4 w-full rounded-2xl border-2 border-accent bg-accent/10 px-6 py-5 hover:bg-accent/20 transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             data-ocid="contact.call_button"
-            aria-label={`Call us at ${PHONE}`}
+            aria-label={`Call us at ${PHONE_DISPLAY}`}
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center shrink-0 shadow-elevated">
@@ -156,13 +452,13 @@ export default function ContactPage() {
               </div>
               <div className="text-left">
                 <p className="text-xs font-body text-muted-foreground uppercase tracking-wide mb-0.5">
-                  Call Us Now
+                  Call Us Now / अभी कॉल करें
                 </p>
                 <p className="font-display font-bold text-xl text-foreground">
-                  {PHONE}
+                  {PHONE_DISPLAY}
                 </p>
                 <p className="text-xs font-body text-muted-foreground mt-0.5">
-                  Mon–Sat, 9 AM – 6 PM
+                  Mon–Sat, 9:00 AM – 6:00 PM IST
                 </p>
               </div>
             </div>
@@ -176,20 +472,12 @@ export default function ContactPage() {
             href={WA_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between gap-4 w-full rounded-2xl border-2 px-6 py-5 transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
-            style={{
-              borderColor: "#25D366",
-              backgroundColor: "rgba(37,211,102,0.08)",
-            }}
+            className="flex items-center justify-between gap-4 w-full rounded-2xl border-2 border-whatsapp bg-whatsapp-subtle px-6 py-5 transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
             data-ocid="contact.whatsapp_button"
             aria-label="Chat on WhatsApp"
           >
             <div className="flex items-center gap-4">
-              <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-elevated"
-                style={{ backgroundColor: "#25D366" }}
-              >
-                {/* WhatsApp SVG icon */}
+              <div className="w-14 h-14 rounded-2xl bg-whatsapp flex items-center justify-center shrink-0 shadow-elevated">
                 <svg
                   viewBox="0 0 24 24"
                   className="w-7 h-7 fill-white"
@@ -200,21 +488,18 @@ export default function ContactPage() {
               </div>
               <div className="text-left">
                 <p className="text-xs font-body text-muted-foreground uppercase tracking-wide mb-0.5">
-                  Chat on WhatsApp
+                  WhatsApp / व्हाट्सएप
                 </p>
                 <p className="font-display font-bold text-xl text-foreground">
-                  Send a Message
+                  {WA_NUMBER}
                 </p>
                 <p className="text-xs font-body text-muted-foreground mt-0.5">
                   Quick reply within 1 hour
                 </p>
               </div>
             </div>
-            <div
-              className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "rgba(37,211,102,0.2)" }}
-            >
-              <MessageCircle className="w-5 h-5" style={{ color: "#25D366" }} />
+            <div className="shrink-0 w-10 h-10 rounded-full bg-whatsapp-ring flex items-center justify-center">
+              <MessageCircle className="w-5 h-5 text-whatsapp" />
             </div>
           </a>
 
@@ -227,9 +512,9 @@ export default function ContactPage() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs font-body text-muted-foreground uppercase tracking-wide mb-0.5">
-                    Support Email
+                    Email / ईमेल
                   </p>
-                  <p className="font-display font-semibold text-foreground text-base truncate">
+                  <p className="font-display font-semibold text-foreground text-sm sm:text-base truncate">
                     {EMAIL}
                   </p>
                 </div>
@@ -250,6 +535,23 @@ export default function ContactPage() {
               </button>
             </CardContent>
           </Card>
+
+          {/* Address */}
+          <Card className="border-border" data-ocid="contact.address_card">
+            <CardContent className="p-5 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <MapPin className="w-6 h-6 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-body text-muted-foreground uppercase tracking-wide mb-0.5">
+                  Address / पता
+                </p>
+                <p className="font-body text-foreground text-sm leading-relaxed">
+                  {ADDRESS}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -262,21 +564,21 @@ export default function ContactPage() {
           <div className="flex items-center gap-2 mb-5">
             <Clock className="w-5 h-5 text-accent" />
             <h2 className="font-display font-bold text-lg text-foreground">
-              Support Hours
+              Working Hours / कार्य समय
             </h2>
             <Badge variant="secondary" className="ml-auto text-xs font-body">
-              Open Now
+              Open Now / अभी खुला
             </Badge>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               {
                 day: "Monday – Friday",
-                time: "9:00 AM – 6:00 PM",
+                time: "9:00 AM – 6:00 PM IST",
                 active: true,
               },
-              { day: "Saturday", time: "9:00 AM – 6:00 PM", active: true },
-              { day: "Sunday", time: "Closed", active: false },
+              { day: "Saturday", time: "9:00 AM – 6:00 PM IST", active: true },
+              { day: "Sunday", time: "Closed / बंद", active: false },
             ].map((h) => (
               <div
                 key={h.day}
@@ -296,15 +598,47 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* ── FAQ Section ───────────────────────────────────────────────────── */}
+      {/* ── Contact Form ──────────────────────────────────────────────────── */}
       <section
         className="py-12 px-4 bg-background"
+        data-ocid="contact.form_section"
+      >
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 rounded-full px-4 py-1.5 mb-4">
+              <Send className="w-4 h-4 text-accent" />
+              <span className="text-sm font-body font-medium text-accent">
+                Send a Message / संदेश भेजें
+              </span>
+            </div>
+            <h2 className="font-display font-bold text-2xl sm:text-3xl text-foreground mb-2">
+              Get in Touch
+            </h2>
+            <p className="font-body text-muted-foreground text-sm sm:text-base">
+              Fill the form below and our team will contact you within 24 hours.
+              <br />
+              नीचे फॉर्म भरें, हमारी टीम 24 घंटे में संपर्क करेगी।
+            </p>
+          </div>
+
+          <Card
+            className="border-border shadow-elevated"
+            data-ocid="contact.form_card"
+          >
+            <ContactForm />
+          </Card>
+        </div>
+      </section>
+
+      {/* ── FAQ Section ───────────────────────────────────────────────────── */}
+      <section
+        className="py-12 px-4 bg-muted/30"
         data-ocid="contact.faq_section"
       >
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="font-display font-bold text-2xl sm:text-3xl text-foreground mb-2">
-              Common Questions
+              Common Questions / सामान्य प्रश्न
             </h2>
             <p className="font-body text-muted-foreground text-sm sm:text-base">
               Find quick answers to the questions we hear most often.
@@ -332,10 +666,10 @@ export default function ContactPage() {
       >
         <div className="max-w-2xl mx-auto text-center text-white">
           <p className="font-display font-bold text-xl sm:text-2xl mb-2">
-            Still have a question?
+            Still have a question? / अभी भी कोई सवाल है?
           </p>
           <p className="font-body text-white/80 text-sm mb-6">
-            Our support team speaks your language and understands your business.
+            Our support team is ready to help you start your rural business.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
@@ -344,7 +678,7 @@ export default function ContactPage() {
               data-ocid="contact.cta_call_button"
             >
               <Phone className="w-4 h-4" />
-              Call Now
+              Call Now / अभी कॉल करें
             </a>
             <a
               href={WA_LINK}

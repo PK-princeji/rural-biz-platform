@@ -93,6 +93,7 @@ export const UserProfile = IDL.Record({
   'aiRecommendation' : IDL.Opt(IDL.Text),
   'name' : IDL.Text,
   'createdAt' : Timestamp,
+  'whatsapp' : IDL.Text,
   'businessType' : BusinessType,
   'mobile' : IDL.Text,
   'location' : IDL.Text,
@@ -120,6 +121,19 @@ export const AIQuizResult = IDL.Record({
   'createdAt' : Timestamp,
   'businessType' : BusinessType,
   'confidence' : IDL.Text,
+});
+export const ContactLeadId = IDL.Nat;
+export const ContactLead = IDL.Record({
+  'id' : ContactLeadId,
+  'status' : IDL.Text,
+  'userId' : IDL.Opt(UserId),
+  'name' : IDL.Text,
+  'whatsapp' : IDL.Text,
+  'submittedAt' : Timestamp,
+  'email' : IDL.Text,
+  'phone' : IDL.Text,
+  'location' : IDL.Text,
+  'problem' : IDL.Text,
 });
 export const PremiumRequestId = IDL.Nat;
 export const PremiumRequest = IDL.Record({
@@ -151,6 +165,7 @@ export const SupplyRequest = IDL.Record({
 export const SaveProfileInput = IDL.Record({
   'aiRecommendation' : IDL.Opt(IDL.Text),
   'name' : IDL.Text,
+  'whatsapp' : IDL.Text,
   'businessType' : BusinessType,
   'mobile' : IDL.Text,
   'location' : IDL.Text,
@@ -166,6 +181,14 @@ export const CreateCaseInput = IDL.Record({
   'businessType' : BusinessType,
   'description' : IDL.Text,
   'photoUrl' : IDL.Opt(IDL.Text),
+});
+export const CreateContactLeadInput = IDL.Record({
+  'name' : IDL.Text,
+  'whatsapp' : IDL.Text,
+  'email' : IDL.Text,
+  'phone' : IDL.Text,
+  'location' : IDL.Text,
+  'problem' : IDL.Text,
 });
 export const CreatePremiumRequestInput = IDL.Record({
   'name' : IDL.Text,
@@ -203,6 +226,7 @@ export const idlService = IDL.Service({
   'getExpert' : IDL.Func([ExpertId], [IDL.Opt(Expert)], ['query']),
   'getMyAIQuizResult' : IDL.Func([], [IDL.Opt(AIQuizResult)], ['query']),
   'getMyCases' : IDL.Func([], [IDL.Vec(Case)], ['query']),
+  'getMyContactLeads' : IDL.Func([], [IDL.Vec(ContactLead)], ['query']),
   'getMyPremiumRequest' : IDL.Func([], [IDL.Opt(PremiumRequest)], ['query']),
   'getMySupplyRequests' : IDL.Func([], [IDL.Vec(SupplyRequest)], ['query']),
   'getMyTrainingEnrollments' : IDL.Func(
@@ -229,6 +253,7 @@ export const idlService = IDL.Service({
   'getUserProfile' : IDL.Func([UserId], [IDL.Opt(UserProfile)], ['query']),
   'grantAdmin' : IDL.Func([IDL.Principal], [], []),
   'listAllCases' : IDL.Func([], [IDL.Vec(Case)], ['query']),
+  'listAllContactLeads' : IDL.Func([], [IDL.Vec(ContactLead)], ['query']),
   'listAllSupplyRequests' : IDL.Func([], [IDL.Vec(SupplyRequest)], ['query']),
   'listExperts' : IDL.Func([], [IDL.Vec(Expert)], ['query']),
   'listPremiumRequests' : IDL.Func([], [IDL.Vec(PremiumRequest)], ['query']),
@@ -240,6 +265,7 @@ export const idlService = IDL.Service({
   'setExpertActive' : IDL.Func([ExpertId, IDL.Bool], [IDL.Opt(Expert)], []),
   'submitAIQuiz' : IDL.Func([QuizAnswers], [AIQuizResult], []),
   'submitCase' : IDL.Func([CreateCaseInput], [Case], []),
+  'submitContactLead' : IDL.Func([CreateContactLeadInput], [IDL.Nat], []),
   'submitPremiumRequest' : IDL.Func(
       [CreatePremiumRequestInput],
       [PremiumRequest],
@@ -352,6 +378,7 @@ export const idlFactory = ({ IDL }) => {
     'aiRecommendation' : IDL.Opt(IDL.Text),
     'name' : IDL.Text,
     'createdAt' : Timestamp,
+    'whatsapp' : IDL.Text,
     'businessType' : BusinessType,
     'mobile' : IDL.Text,
     'location' : IDL.Text,
@@ -379,6 +406,19 @@ export const idlFactory = ({ IDL }) => {
     'createdAt' : Timestamp,
     'businessType' : BusinessType,
     'confidence' : IDL.Text,
+  });
+  const ContactLeadId = IDL.Nat;
+  const ContactLead = IDL.Record({
+    'id' : ContactLeadId,
+    'status' : IDL.Text,
+    'userId' : IDL.Opt(UserId),
+    'name' : IDL.Text,
+    'whatsapp' : IDL.Text,
+    'submittedAt' : Timestamp,
+    'email' : IDL.Text,
+    'phone' : IDL.Text,
+    'location' : IDL.Text,
+    'problem' : IDL.Text,
   });
   const PremiumRequestId = IDL.Nat;
   const PremiumRequest = IDL.Record({
@@ -410,6 +450,7 @@ export const idlFactory = ({ IDL }) => {
   const SaveProfileInput = IDL.Record({
     'aiRecommendation' : IDL.Opt(IDL.Text),
     'name' : IDL.Text,
+    'whatsapp' : IDL.Text,
     'businessType' : BusinessType,
     'mobile' : IDL.Text,
     'location' : IDL.Text,
@@ -425,6 +466,14 @@ export const idlFactory = ({ IDL }) => {
     'businessType' : BusinessType,
     'description' : IDL.Text,
     'photoUrl' : IDL.Opt(IDL.Text),
+  });
+  const CreateContactLeadInput = IDL.Record({
+    'name' : IDL.Text,
+    'whatsapp' : IDL.Text,
+    'email' : IDL.Text,
+    'phone' : IDL.Text,
+    'location' : IDL.Text,
+    'problem' : IDL.Text,
   });
   const CreatePremiumRequestInput = IDL.Record({
     'name' : IDL.Text,
@@ -462,6 +511,7 @@ export const idlFactory = ({ IDL }) => {
     'getExpert' : IDL.Func([ExpertId], [IDL.Opt(Expert)], ['query']),
     'getMyAIQuizResult' : IDL.Func([], [IDL.Opt(AIQuizResult)], ['query']),
     'getMyCases' : IDL.Func([], [IDL.Vec(Case)], ['query']),
+    'getMyContactLeads' : IDL.Func([], [IDL.Vec(ContactLead)], ['query']),
     'getMyPremiumRequest' : IDL.Func([], [IDL.Opt(PremiumRequest)], ['query']),
     'getMySupplyRequests' : IDL.Func([], [IDL.Vec(SupplyRequest)], ['query']),
     'getMyTrainingEnrollments' : IDL.Func(
@@ -488,6 +538,7 @@ export const idlFactory = ({ IDL }) => {
     'getUserProfile' : IDL.Func([UserId], [IDL.Opt(UserProfile)], ['query']),
     'grantAdmin' : IDL.Func([IDL.Principal], [], []),
     'listAllCases' : IDL.Func([], [IDL.Vec(Case)], ['query']),
+    'listAllContactLeads' : IDL.Func([], [IDL.Vec(ContactLead)], ['query']),
     'listAllSupplyRequests' : IDL.Func([], [IDL.Vec(SupplyRequest)], ['query']),
     'listExperts' : IDL.Func([], [IDL.Vec(Expert)], ['query']),
     'listPremiumRequests' : IDL.Func([], [IDL.Vec(PremiumRequest)], ['query']),
@@ -503,6 +554,7 @@ export const idlFactory = ({ IDL }) => {
     'setExpertActive' : IDL.Func([ExpertId, IDL.Bool], [IDL.Opt(Expert)], []),
     'submitAIQuiz' : IDL.Func([QuizAnswers], [AIQuizResult], []),
     'submitCase' : IDL.Func([CreateCaseInput], [Case], []),
+    'submitContactLead' : IDL.Func([CreateContactLeadInput], [IDL.Nat], []),
     'submitPremiumRequest' : IDL.Func(
         [CreatePremiumRequestInput],
         [PremiumRequest],

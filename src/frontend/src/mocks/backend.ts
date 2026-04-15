@@ -28,6 +28,7 @@ export const mockBackend: backendInterface = {
     id: mockPrincipal,
     name: "Ramesh Kumar",
     mobile: "9876543210",
+    whatsapp: "",
     location: "Jaipur, Rajasthan",
     businessType: "agriculture" as unknown as BusinessType,
     createdAt: BigInt(Date.now()),
@@ -118,6 +119,7 @@ export const mockBackend: backendInterface = {
     id: mockPrincipal,
     name: "Ramesh Kumar",
     mobile: "9876543210",
+    whatsapp: "",
     location: "Jaipur, Rajasthan",
     businessType: "agriculture" as unknown as BusinessType,
     createdAt: BigInt(Date.now()),
@@ -246,6 +248,7 @@ export const mockBackend: backendInterface = {
       id: mockPrincipal,
       name: "Ramesh Kumar",
       mobile: "9876543210",
+      whatsapp: "",
       location: "Jaipur, Rajasthan",
       businessType: "agriculture" as unknown as BusinessType,
       createdAt: BigInt(Date.now()),
@@ -451,4 +454,10 @@ export const mockBackend: backendInterface = {
     status: "processing" as unknown as SupplyRequestStatus,
     createdAt: BigInt(Date.now()),
   }),
+
+  getMyContactLeads: async () => [],
+
+  listAllContactLeads: async () => [],
+
+  submitContactLead: async () => BigInt(1),
 };

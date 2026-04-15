@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
+import { MessageCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import type { AIQuizResult, QuizAnswers } from "../backend.d.ts";
@@ -152,6 +153,16 @@ const BUSINESS_CONFIG: Record<
     description: "Great for hill or dry regions with low to medium investment.",
   },
 };
+
+// ─── WhatsApp helper ───────────────────────────────────────────────────────────
+
+function buildWhatsAppUrl(businessType: BusinessType): string {
+  const biz = BUSINESS_CONFIG[businessType] ?? { label: String(businessType) };
+  const message = encodeURIComponent(
+    `Hi! I completed the AI Business Quiz and got recommendation: ${biz.label}. I need expert help.`,
+  );
+  return `https://wa.me/918986378505?text=${message}`;
+}
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 
@@ -458,6 +469,8 @@ function ResultCard({ result, isSavedResult, onRetake }: ResultCardProps) {
         ? "bg-accent/20 text-accent-foreground border-accent/40"
         : "bg-muted text-muted-foreground border-border";
 
+  const whatsappUrl = buildWhatsAppUrl(result.businessType);
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -534,6 +547,29 @@ function ResultCard({ result, isSavedResult, onRetake }: ResultCardProps) {
             </ul>
           </div>
         )}
+
+        {/* Get Expert Call via WhatsApp — prominent CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.35 }}
+          className="mb-4"
+        >
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-3 w-full rounded-xl py-4 px-5 font-body font-semibold text-base text-white transition-smooth focus-ring bg-whatsapp"
+            data-ocid="ai_suggest.get_expert_call_button"
+          >
+            <MessageCircle className="w-5 h-5 flex-shrink-0" />
+            <span>Get Expert Call / विशेषज्ञ से बात करें</span>
+            <span className="text-lg flex-shrink-0">📞</span>
+          </a>
+          <p className="text-xs text-center text-muted-foreground mt-2 font-body">
+            WhatsApp पर तुरंत संपर्क करें · Contact us on WhatsApp
+          </p>
+        </motion.div>
 
         {/* Action buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">

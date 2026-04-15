@@ -10,7 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Briefcase, Copy, Loader2, MapPin, Phone, User } from "lucide-react";
+import {
+  Briefcase,
+  Copy,
+  Loader2,
+  MapPin,
+  MessageCircle,
+  Phone,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Specialization as BackendBusinessType } from "../backend.d";
@@ -18,7 +26,15 @@ import { Layout } from "../components/Layout";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { useAuth } from "../hooks/useAuth";
 import { useBackend } from "../hooks/useBackend";
-import type { BusinessType, UserProfileInput } from "../types";
+import type { BusinessType } from "../types";
+
+interface UserProfileFormState {
+  name: string;
+  mobile: string;
+  whatsapp: string;
+  location: string;
+  businessType: BusinessType | undefined;
+}
 
 const BUSINESS_TYPES: { value: BusinessType; label: string }[] = [
   { value: "Farming", label: "🌾 Farming" },
@@ -38,16 +54,17 @@ function ProfileContent() {
   const { principal } = useAuth();
   const backend = useBackend();
 
-  const [form, setForm] = useState<UserProfileInput>({
+  const [form, setForm] = useState<UserProfileFormState>({
     name: "",
     mobile: "",
+    whatsapp: "",
     location: "",
     businessType: undefined,
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const handleChange = (field: keyof UserProfileInput, value: string) => {
+  const handleChange = (field: keyof UserProfileFormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
     setSaved(false);
   };
@@ -62,6 +79,7 @@ function ProfileContent() {
       await backend.saveCallerUserProfile({
         name: form.name.trim(),
         mobile: form.mobile ?? "",
+        whatsapp: form.whatsapp ?? "",
         location: form.location ?? "",
         businessType: form.businessType
           ? BUSINESS_TYPE_MAP[form.businessType]
@@ -167,7 +185,7 @@ function ProfileContent() {
               className="text-sm font-body font-medium flex items-center gap-1.5"
             >
               <Phone className="w-3.5 h-3.5 text-muted-foreground" />
-              Mobile Number
+              Mobile Number / मोबाइल नंबर
             </Label>
             <Input
               id="mobile"
@@ -178,6 +196,40 @@ function ProfileContent() {
               className="font-body"
               data-ocid="profile.mobile_input"
             />
+          </div>
+
+          {/* WhatsApp */}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="whatsapp"
+              className="text-sm font-body font-medium flex items-center gap-1.5"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-muted-foreground" />
+              WhatsApp Number / व्हाट्सएप नंबर
+              <span className="text-xs text-muted-foreground font-normal ml-1">
+                (Optional)
+              </span>
+            </Label>
+            <div className="relative">
+              <Input
+                id="whatsapp"
+                type="tel"
+                placeholder="+91 89863 78505"
+                value={form.whatsapp ?? ""}
+                onChange={(e) => handleChange("whatsapp", e.target.value)}
+                className="font-body pl-10"
+                data-ocid="profile.whatsapp_input"
+              />
+              <span
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-base pointer-events-none"
+                aria-hidden="true"
+              >
+                💬
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground font-body">
+              Our experts will contact you on WhatsApp for faster support.
+            </p>
           </div>
 
           {/* Location */}

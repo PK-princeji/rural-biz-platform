@@ -16,10 +16,11 @@ function Header() {
 
   const NAV_LINKS = [
     { labelEn: "How It Works", labelHi: "कैसे काम करता है", href: "/" },
-    { labelEn: "Sectors", labelHi: "क्षेत्र", href: "/#sectors" },
+    { labelEn: "Sectors", labelHi: "क्षेत्र", href: "/#services" },
     { labelEn: "Resources", labelHi: "संसाधन", href: "/resources" },
     { labelEn: "Trainings", labelHi: "प्रशिक्षण", href: "/trainings" },
     { labelEn: "AI Quiz", labelHi: "AI क्विज़", href: "/ai-suggest" },
+    { labelEn: "About", labelHi: "परिचय", href: "/about" },
     { labelEn: "Contact", labelHi: "संपर्क", href: "/contact" },
   ];
 
@@ -274,6 +275,7 @@ function Footer() {
                   href: "/trainings",
                 },
                 { labelEn: "Resources", labelHi: "संसाधन", href: "/resources" },
+                { labelEn: "About", labelHi: "परिचय", href: "/about" },
                 { labelEn: "Contact", labelHi: "संपर्क", href: "/contact" },
                 { labelEn: "Dashboard", labelHi: "डैशबोर्ड", href: "/dashboard" },
               ].map((link) => (

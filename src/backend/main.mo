@@ -8,6 +8,7 @@ import ProfileTypes "types/profiles";
 import TrainingTypes "types/trainings";
 import PremiumTypes "types/premium";
 import AITypes "types/ai";
+import ContactTypes "types/contacts";
 import CasesApi "mixins/cases-api";
 import ExpertsApi "mixins/experts-api";
 import ResourcesApi "mixins/resources-api";
@@ -15,6 +16,7 @@ import ProfilesApi "mixins/profiles-api";
 import TrainingsApi "mixins/trainings-api";
 import PremiumApi "mixins/premium-api";
 import AIApi "mixins/ai-api";
+import ContactsApi "mixins/contacts-api";
 import Migration "migration";
 
 (with migration = Migration.run)
@@ -58,6 +60,11 @@ actor {
   // AI quiz results
   let aiResults = Map.empty<Principal, AITypes.AIQuizResult>();
   include AIApi(aiResults);
+
+  // Contact leads — form submissions for lead capture
+  let contactLeads = Map.empty<Nat, ContactTypes.ContactLead>();
+  let nextContactLeadId = { var value : Nat = 0 };
+  include ContactsApi(admins, contactLeads, nextContactLeadId);
 
   // Seed sample resources (3+ per category)
   do {

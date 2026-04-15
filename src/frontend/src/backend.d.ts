@@ -53,6 +53,27 @@ export interface CreateResourceInput {
     category: ResourceCategory;
 }
 export type TrainingId = bigint;
+export interface CreateContactLeadInput {
+    name: string;
+    whatsapp: string;
+    email: string;
+    phone: string;
+    location: string;
+    problem: string;
+}
+export type ContactLeadId = bigint;
+export interface ContactLead {
+    id: ContactLeadId;
+    status: string;
+    userId?: UserId;
+    name: string;
+    whatsapp: string;
+    submittedAt: Timestamp;
+    email: string;
+    phone: string;
+    location: string;
+    problem: string;
+}
 export interface AIQuizResult {
     reasons: Array<string>;
     createdAt: Timestamp;
@@ -84,6 +105,7 @@ export type SupplyRequestId = bigint;
 export interface SaveProfileInput {
     aiRecommendation?: string;
     name: string;
+    whatsapp: string;
     businessType: BusinessType;
     mobile: string;
     location: string;
@@ -134,6 +156,7 @@ export interface UserProfile {
     aiRecommendation?: string;
     name: string;
     createdAt: Timestamp;
+    whatsapp: string;
     businessType: BusinessType;
     mobile: string;
     location: string;
@@ -192,6 +215,7 @@ export interface backendInterface {
     getExpert(id: ExpertId): Promise<Expert | null>;
     getMyAIQuizResult(): Promise<AIQuizResult | null>;
     getMyCases(): Promise<Array<Case>>;
+    getMyContactLeads(): Promise<Array<ContactLead>>;
     getMyPremiumRequest(): Promise<PremiumRequest | null>;
     getMySupplyRequests(): Promise<Array<SupplyRequest>>;
     getMyTrainingEnrollments(): Promise<Array<TrainingEnrollment>>;
@@ -205,6 +229,7 @@ export interface backendInterface {
      */
     grantAdmin(user: Principal): Promise<void>;
     listAllCases(): Promise<Array<Case>>;
+    listAllContactLeads(): Promise<Array<ContactLead>>;
     listAllSupplyRequests(): Promise<Array<SupplyRequest>>;
     listExperts(): Promise<Array<Expert>>;
     listPremiumRequests(): Promise<Array<PremiumRequest>>;
@@ -216,6 +241,7 @@ export interface backendInterface {
     setExpertActive(id: ExpertId, isActive: boolean): Promise<Expert | null>;
     submitAIQuiz(answers: QuizAnswers): Promise<AIQuizResult>;
     submitCase(input: CreateCaseInput): Promise<Case>;
+    submitContactLead(input: CreateContactLeadInput): Promise<bigint>;
     submitPremiumRequest(input: CreatePremiumRequestInput): Promise<PremiumRequest>;
     submitSupplyRequest(input: CreateSupplyRequestInput): Promise<SupplyRequest>;
     toggleTrainingProgramActive(id: TrainingId): Promise<void>;

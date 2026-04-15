@@ -36,10 +36,31 @@ export type CaseId = bigint;
 export type CaseStatus = { 'pending' : null } |
   { 'completed' : null } |
   { 'inProgress' : null };
+export interface ContactLead {
+  'id' : ContactLeadId,
+  'status' : string,
+  'userId' : [] | [UserId],
+  'name' : string,
+  'whatsapp' : string,
+  'submittedAt' : Timestamp,
+  'email' : string,
+  'phone' : string,
+  'location' : string,
+  'problem' : string,
+}
+export type ContactLeadId = bigint;
 export interface CreateCaseInput {
   'businessType' : BusinessType,
   'description' : string,
   'photoUrl' : [] | [string],
+}
+export interface CreateContactLeadInput {
+  'name' : string,
+  'whatsapp' : string,
+  'email' : string,
+  'phone' : string,
+  'location' : string,
+  'problem' : string,
 }
 export interface CreateExpertInput {
   'contactInfo' : string,
@@ -117,6 +138,7 @@ export type ResourceId = bigint;
 export interface SaveProfileInput {
   'aiRecommendation' : [] | [string],
   'name' : string,
+  'whatsapp' : string,
   'businessType' : BusinessType,
   'mobile' : string,
   'location' : string,
@@ -169,6 +191,7 @@ export interface UserProfile {
   'aiRecommendation' : [] | [string],
   'name' : string,
   'createdAt' : Timestamp,
+  'whatsapp' : string,
   'businessType' : BusinessType,
   'mobile' : string,
   'location' : string,
@@ -187,6 +210,7 @@ export interface _SERVICE {
   'getExpert' : ActorMethod<[ExpertId], [] | [Expert]>,
   'getMyAIQuizResult' : ActorMethod<[], [] | [AIQuizResult]>,
   'getMyCases' : ActorMethod<[], Array<Case>>,
+  'getMyContactLeads' : ActorMethod<[], Array<ContactLead>>,
   'getMyPremiumRequest' : ActorMethod<[], [] | [PremiumRequest]>,
   'getMySupplyRequests' : ActorMethod<[], Array<SupplyRequest>>,
   'getMyTrainingEnrollments' : ActorMethod<[], Array<TrainingEnrollment>>,
@@ -203,6 +227,7 @@ export interface _SERVICE {
    */
   'grantAdmin' : ActorMethod<[Principal], undefined>,
   'listAllCases' : ActorMethod<[], Array<Case>>,
+  'listAllContactLeads' : ActorMethod<[], Array<ContactLead>>,
   'listAllSupplyRequests' : ActorMethod<[], Array<SupplyRequest>>,
   'listExperts' : ActorMethod<[], Array<Expert>>,
   'listPremiumRequests' : ActorMethod<[], Array<PremiumRequest>>,
@@ -214,6 +239,7 @@ export interface _SERVICE {
   'setExpertActive' : ActorMethod<[ExpertId, boolean], [] | [Expert]>,
   'submitAIQuiz' : ActorMethod<[QuizAnswers], AIQuizResult>,
   'submitCase' : ActorMethod<[CreateCaseInput], Case>,
+  'submitContactLead' : ActorMethod<[CreateContactLeadInput], bigint>,
   'submitPremiumRequest' : ActorMethod<
     [CreatePremiumRequestInput],
     PremiumRequest

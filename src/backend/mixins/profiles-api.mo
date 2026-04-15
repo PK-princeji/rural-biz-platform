@@ -26,6 +26,7 @@ mixin (
       id = caller;
       name = input.name;
       mobile = input.mobile;
+      whatsapp = input.whatsapp;
       location = input.location;
       businessType = input.businessType;
       createdAt = switch (existing) { case (?p) p.createdAt; case null now };

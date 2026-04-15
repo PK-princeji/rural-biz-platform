@@ -177,4 +177,24 @@
   .card-interactive {
     @apply rounded-lg border border-border bg-card p-6 transition-smooth cursor-pointer hover:shadow-elevated hover:border-accent/50;
   }
+
+  .bg-whatsapp {
+    background-color: #25d366;
+  }
+
+  .border-whatsapp {
+    border-color: #25d366;
+  }
+
+  .text-whatsapp {
+    color: #25d366;
+  }
+
+  .bg-whatsapp-subtle {
+    background-color: rgba(37, 211, 102, 0.08);
+  }
+
+  .bg-whatsapp-ring {
+    background-color: rgba(37, 211, 102, 0.2);
+  }
 }

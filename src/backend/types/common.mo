@@ -8,4 +8,5 @@ module {
   public type TrainingId = Nat;
   public type EnrollmentId = Nat;
   public type PremiumRequestId = Nat;
+  public type ContactLeadId = Nat;
 };

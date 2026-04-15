@@ -19,6 +19,7 @@ const ContactPage = lazy(() => import("./pages/ContactPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const TrainingsPage = lazy(() => import("./pages/TrainingsPage"));
 const AISuggestPage = lazy(() => import("./pages/AISuggestPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
 
 // Fallback loader
 function PageLoader() {
@@ -107,6 +108,12 @@ const aiSuggestRoute = createRoute({
   component: AISuggestPage,
 });
 
+const aboutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/about",
+  component: AboutPage,
+});
+
 // Route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -119,6 +126,7 @@ const routeTree = rootRoute.addChildren([
   profileRoute,
   trainingsRoute,
   aiSuggestRoute,
+  aboutRoute,
 ]);
 
 // Router

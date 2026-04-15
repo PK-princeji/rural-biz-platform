@@ -23,6 +23,20 @@ type Case__874865401 =
     updatedAt : Timestamp__301639476;
     userId : UserId__158757552
   };
+type ContactLeadId__572323602 = Nat;
+type ContactLead__55592779 =
+  {
+    email : Text;
+    id : ContactLeadId__572323602;
+    location : Text;
+    name : Text;
+    phone : Text;
+    problem : Text;
+    status : Text;
+    submittedAt : Timestamp__301639476;
+    userId : ?UserId__158757552;
+    whatsapp : Text
+  };
 type Data__791452850<K, V> =
   {var count : Nat__490723111; kvs : [var ?(K, V)]};
 type EnrollmentId__165279902 = Nat;
@@ -53,6 +67,7 @@ type OldBusinessType__103299508 =
   {#agriculture; #fishery; #goatFarming; #poultry};
 type OldUserProfile__416069324 =
   {
+    aiRecommendation : ?Text;
     businessType : OldBusinessType__103299508;
     createdAt : Int;
     id : Principal;
@@ -127,7 +142,8 @@ type UserProfile__190304746 =
     id : UserId__158757552;
     location : Text;
     mobile : Text;
-    name : Text
+    name : Text;
+    whatsapp : Text
   };
 actor ({
   stable admins :
@@ -142,12 +158,18 @@ actor ({
       var root : Node__46230540<Nat, Case__874865401>;
       var size : Nat__490723111
     };
+  stable contactLeads :
+    {
+      var root : Node__46230540<Nat, ContactLead__55592779>;
+      var size : Nat__490723111
+    };
   stable experts :
     {
       var root : Node__46230540<Nat, Expert__837171470>;
       var size : Nat__490723111
     };
   stable nextCaseId : {var value : Nat};
+  stable nextContactLeadId : {var value : Nat};
   stable nextEnrollmentId : {var value : Nat};
   stable nextExpertId : {var value : Nat};
   stable nextPremiumId : {var value : Nat};
@@ -193,12 +215,18 @@ actor ({
       var root : Node__46230540<Nat, Case__874865401>;
       var size : Nat__490723111
     };
+  stable contactLeads :
+    {
+      var root : Node__46230540<Nat, ContactLead__55592779>;
+      var size : Nat__490723111
+    };
   stable experts :
     {
       var root : Node__46230540<Nat, Expert__837171470>;
       var size : Nat__490723111
     };
   stable nextCaseId : {var value : Nat};
+  stable nextContactLeadId : {var value : Nat};
   stable nextEnrollmentId : {var value : Nat};
   stable nextExpertId : {var value : Nat};
   stable nextPremiumId : {var value : Nat};
