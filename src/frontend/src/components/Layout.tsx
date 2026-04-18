@@ -246,7 +246,6 @@ function Header() {
 function Footer() {
   const year = new Date().getFullYear();
   const { t } = useLanguage();
-  const utmLink = `https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== "undefined" ? window.location.hostname : "")}`;
 
   const QUICK_LINKS = [
     { labelEn: "Home", labelHi: "होम", href: "/" },
@@ -377,14 +376,12 @@ function Footer() {
           <p className="text-xs text-muted-foreground font-body">
             © {year} UdyamSathi. All rights reserved.
           </p>
-          <a
-            href={utmLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-muted-foreground hover:text-accent transition-colors duration-200 font-body"
-          >
-            Built with love using caffeine.ai
-          </a>
+          <p className="text-xs text-muted-foreground font-body">
+            {t("Built by", "निर्मित")}{" "}
+            <span className="font-semibold text-foreground">
+              code_x_elite group
+            </span>
+          </p>
         </div>
       </div>
     </footer>

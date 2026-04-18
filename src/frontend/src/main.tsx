@@ -37,7 +37,7 @@ function renderApp() {
   );
 }
 
-// Fetch /env.json at runtime. The Caffeine platform populates this file
+// Fetch /env.json at runtime. Runtime environment file — populated
 // with the real backend_canister_id before serving the app.
 // We load it eagerly so useBackend.ts can read it from window.__caffeine_env.
 fetch("/env.json")

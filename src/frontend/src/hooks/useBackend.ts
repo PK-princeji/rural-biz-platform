@@ -7,33 +7,33 @@ import { mockBackend } from "../mocks/backend";
 
 const _env = (import.meta as unknown as { env: Record<string, string> }).env;
 
-// In production the platform populates /env.json at runtime.
-// We read it synchronously via a script tag injected by the platform,
+// In production the runtime environment populates /env.json at startup.
+// We read it synchronously via a script tag injected by the runtime,
 // or fall back to a fetch-at-startup approach. Here we read the
-// window.__caffeine_env object (populated by the platform's runtime injection)
+// window.__caffeine_env object (populated by the runtime injection)
 // or env.json values that were fetched at app startup.
 // Priority: window.__caffeine_env → Vite build-time env → empty string
 
-type CaffeineEnv = {
+type RuntimeEnv = {
   backend_canister_id?: string;
   backend_host?: string;
 };
 
-function getRuntimeEnv(): CaffeineEnv {
-  // The platform injects runtime config into window.__caffeine_env
+function getRuntimeEnv(): RuntimeEnv {
+  // The runtime environment injects config into window.__caffeine_env
   // or exposes it via window.__env. Check both.
   const w = window as unknown as Record<string, unknown>;
   if (w.__caffeine_env && typeof w.__caffeine_env === "object") {
-    return w.__caffeine_env as CaffeineEnv;
+    return w.__caffeine_env as RuntimeEnv;
   }
   if (w.__env && typeof w.__env === "object") {
-    return w.__env as CaffeineEnv;
+    return w.__env as RuntimeEnv;
   }
   return {};
 }
 
 function resolveCanisterId(): string {
-  // 1. Runtime env from platform (populated after app load via env.json)
+  // 1. Runtime env (populated after app load via env.json)
   const runtimeEnv = getRuntimeEnv();
   if (runtimeEnv.backend_canister_id) {
     return runtimeEnv.backend_canister_id;
